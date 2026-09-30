@@ -1,0 +1,14 @@
+{
+  "name": "podium",
+  "owner": { "name": "Podium", "url": "https://podium.breezelabs.app" },
+  "metadata": {
+    "description": "Podium: design presentation decks with Claude and present them from a link."
+  },
+  "plugins": [
+    {
+      "name": "podium",
+      "source": "./plugins/podium",
+      "description": "The Podium skill (brief, design language, build program, eyes, critic) and the Podium connector — for claude.ai chat, the desktop app, Cowork and Claude Code."
+    }
+  ]
+}

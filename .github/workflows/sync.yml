@@ -1,0 +1,49 @@
+name: Sync the plugin from Podium
+
+# Podium serves the plugin it was deployed with at /plugin.zip. This copies it here, where
+# claude.ai and Claude Code install and update it from, and raises the version whenever
+# the contents change. Hourly, and on demand right after a deploy:
+#   gh workflow run sync.yml -R swaroopvarma1/podium-plugin
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the deployed plugin
+        run: |
+          curl -fsSL --retry 3 https://podium.breezelabs.app/plugin.zip -o /tmp/plugin.zip
+          rm -rf /tmp/plugin && mkdir /tmp/plugin && unzip -q /tmp/plugin.zip -d /tmp/plugin
+          test -f /tmp/plugin/.claude-plugin/plugin.json
+
+      - name: Replace plugins/podium, keeping the current version for the comparison
+        run: |
+          current=$(jq -r .version plugins/podium/.claude-plugin/plugin.json 2>/dev/null || echo 2.0.0)
+          rm -rf plugins/podium && mkdir -p plugins && cp -R /tmp/plugin plugins/podium
+          jq --arg v "$current" '.version = $v' plugins/podium/.claude-plugin/plugin.json > /tmp/p.json
+          mv /tmp/p.json plugins/podium/.claude-plugin/plugin.json
+
+      - name: Commit when it changed, with a new version
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then echo "unchanged"; exit 0; fi
+          version="2.0.${GITHUB_RUN_NUMBER}"
+          jq --arg v "$version" '.version = $v' plugins/podium/.claude-plugin/plugin.json > /tmp/p.json
+          mv /tmp/p.json plugins/podium/.claude-plugin/plugin.json
+          git config user.name "podium-sync"
+          git config user.email "podium-sync@users.noreply.github.com"
+          git add -A
+          git commit -m "podium ${version}"
+          git push

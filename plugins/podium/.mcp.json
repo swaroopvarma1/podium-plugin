@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "podium": {
+      "type": "http",
+      "url": "https://podium.breezelabs.app/mcp"
+    }
+  }
+}
