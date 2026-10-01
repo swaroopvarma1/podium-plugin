@@ -292,8 +292,11 @@ async function openTab(chrome) {
     return r.result?.value;
   };
 
-  const viewport = (width, height) =>
-    send('Emulation.setDeviceMetricsOverride', { width: Math.round(width), height: Math.round(height), deviceScaleFactor: 1, mobile: false });
+  /* `mobile` emulates a phone: the viewport meta is honoured and touch is on. */
+  const viewport = (width, height, { mobile = false } = {}) => Promise.all([
+    send('Emulation.setDeviceMetricsOverride', { width: Math.round(width), height: Math.round(height), deviceScaleFactor: 1, mobile }),
+    send('Emulation.setTouchEmulationEnabled', { enabled: mobile })
+  ]);
 
   const navigate = async (url) => {
     const loaded = new Promise((resolve) => { onLoad = resolve; });
@@ -341,7 +344,7 @@ async function openTab(chrome) {
     await chrome.send('Target.closeTarget', { targetId }).catch(() => {});
   };
 
-  return { evaluate, viewport, navigate, until, settle, images, capture, close, problems };
+  return { evaluate, viewport, navigate, until, settle, images, capture, close, problems, send };
 }
 
 /* ─────────────────────────────  looking  ──────────────────────────── */
@@ -438,7 +441,9 @@ async function lookAt(chrome, { target, asked, builds = new Map() }) {
     /* The sheet announces itself once it has hydrated. Anything that never does is not a
        Podium deck — a site somebody pointed at as a reference — and is screenshotted as a
        page instead of failing. */
-    const isDeck = await tab.until('Boolean(window.podium && window.podium.report && document.querySelector(".tiles figure.cell"))', target.deckLink ? 20_000 : 4_000);
+    const isDeck = await tab.until('Boolean(window.podium && ((window.podium.report && document.querySelector(".tiles figure.cell")) || window.podium.kind === "page"))', target.deckLink ? 20_000 : 4_000);
+    /* A page — one HTML document — is read by scrolling, at two widths, not as a sheet. */
+    if (isDeck && await tab.evaluate('window.podium.kind === "page"')) return await lookAtPageDoc(chrome, tab);
     if (!isDeck) {
       if (target.stage) {
         throw new Error(
@@ -556,6 +561,118 @@ const span = (boxes) => {
   return [x0, y0, x1 - x0, y1 - y0];
 };
 const pad = ([x, y, w, h], p) => [Math.max(0, x - p), Math.max(0, y - p), w + 2 * p, h + 2 * p];
+
+/*
+ * A Podium page: one HTML document in the viewer's sandboxed frame, read the way a person
+ * reads it — scrolled, screen by screen, at a desktop width and at a phone's. Scrolling
+ * (rather than stretching the frame to the page's full height) keeps a 100vh hero the
+ * height of a screen and lets every reveal-on-scroll run. The screens are tiled into a
+ * few overview pictures per width; the measurements come from Podium's bridge inside the
+ * frame, so they are the page's own at that width.
+ */
+const PAGE_WIDTHS = [
+  { name: 'desktop', width: 1440, height: 900, mobile: false, scale: 0.5, cols: 2, rows: 3 },
+  { name: 'phone', width: 390, height: 844, mobile: true, scale: 1, cols: 4, rows: 1 }
+];
+const PAGE_SCREENS_MAX = 24;
+
+async function lookAtPageDoc(chrome, tab) {
+  const pictures = [];
+  const seen = [];
+  for (const w of PAGE_WIDTHS) {
+    await tab.viewport(w.width, w.height, { mobile: w.mobile });
+    await tab.until('document.documentElement.hasAttribute("data-podium-ready")', 30_000);
+    await sleep(600);
+    const first = await tab.evaluate('window.podium.scrollTo(0)');
+    const report = await tab.evaluate('window.podium.report()');
+    const step = Math.round(first.vh * 0.92);
+    const screens = [];
+    let last = -1;
+    for (let y = 0; screens.length < PAGE_SCREENS_MAX; y += step) {
+      const at = await tab.evaluate(`window.podium.scrollTo(${y})`);
+      if (at.y <= last) break;                 // the page cannot scroll further: no repeat
+      last = at.y;
+      await sleep(700);                      // reveals run, lazy pictures load
+      await tab.images(4_000);
+      const shot = await tab.send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: w.width, height: w.height, scale: w.scale } });
+      screens.push(shot.data);
+      if (at.y + at.vh >= at.h - 2) break;    // the last screen
+    }
+    const per = w.cols * w.rows;
+    for (let i = 0; i < screens.length; i += per) {
+      const group = screens.slice(i, i + per);
+      const tile = await composeTiles(chrome, group, { cols: w.cols, cellW: Math.round(w.width * w.scale), cellH: Math.round(w.height * w.scale) });
+      pictures.push({ ...tile, label: `${w.name} ${w.width}px — screens ${i + 1}–${i + group.length} of ${screens.length}`, kind: 'page' });
+    }
+    seen.push({ ...w, report, screens: screens.length });
+  }
+  await tab.viewport(SHEET_VIEWPORT, 1000);
+  return { text: pageSummary(seen, tab.problems), pictures };
+}
+
+/** Screens tiled left to right, top to bottom, in a scratch tab with a canvas. */
+async function composeTiles(chrome, screens, { cols, cellW, cellH }) {
+  const scratch = await openTab(chrome);
+  try {
+    const rows = Math.ceil(screens.length / cols);
+    const gap = 12;
+    const W = cols * cellW + (cols - 1) * gap;
+    const H = rows * cellH + (rows - 1) * gap;
+    const data = await scratch.evaluate(`(async () => {
+      const srcs = ${JSON.stringify(screens.map((d) => `data:image/png;base64,${d}`))};
+      const c = document.createElement('canvas'); c.width = ${W}; c.height = ${H};
+      const g = c.getContext('2d'); g.fillStyle = '#3b3c42'; g.fillRect(0, 0, c.width, c.height);
+      for (let i = 0; i < srcs.length; i++) {
+        const im = new Image(); im.src = srcs[i]; await im.decode();
+        const x = (i % ${cols}) * (${cellW} + ${gap}), y = Math.floor(i / ${cols}) * (${cellH} + ${gap});
+        g.drawImage(im, x, y, ${cellW}, ${cellH});
+      }
+      return c.toDataURL('image/png').split(',')[1];
+    })()`);
+    let out = { data, mimeType: 'image/png', width: W, height: H };
+    if (data.length * 0.75 > PNG_LIMIT) {
+      const jpeg = await scratch.evaluate(`(async () => { const im = new Image(); im.src = 'data:image/png;base64,${data}'; await im.decode();
+        const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').drawImage(im, 0, 0);
+        return c.toDataURL('image/jpeg', 0.85).split(',')[1]; })()`);
+      out = { data: jpeg, mimeType: 'image/jpeg', width: W, height: H };
+    }
+    return out;
+  } finally {
+    await scratch.close();
+  }
+}
+
+function pageSummary(seen, problems) {
+  const lines = [];
+  const title = seen[0]?.report?.title || 'Untitled page';
+  lines.push(`"${title}" — a page, seen at ${seen.map((s) => `${s.width}px (${s.name}, ${s.report?.height ?? '?'}px tall, ${s.screens} screens)`).join(' and ')}.`);
+  lines.push('Each picture tiles the screens in reading order, left to right, top to bottom.');
+  for (const s of seen) {
+    const r = s.report ?? {};
+    const out = [];
+    if (r.overflow?.length) out.push(`!! scrolls sideways — ${r.overflow.slice(0, 3).map((o) => `${o.selector} reaches ${o.right}px${o.text ? ` ("${o.text}")` : ''}`).join('; ')}`);
+    const smallest = r.textSizes?.[0]?.px;
+    if (smallest !== undefined) out.push(`smallest text ${smallest}px${r.small?.length ? ` — under 12px: ${r.small.slice(0, 3).map((t) => `${t.px}px "${t.text}"`).join(', ')}` : ''}`);
+    const missing = (r.fonts ?? []).filter((f) => !f.loaded);
+    out.push(`faces: ${(r.fonts ?? []).map((f) => `${f.family}${f.generic ? '' : f.loaded ? ' ✓' : ' ✗'}`).join(' · ') || '—'}`);
+    if (missing.length) out.push(`!! never loaded: ${missing.map((f) => f.family).join(', ')} — check the Google Fonts <link>`);
+    if (r.broken?.length) out.push(`!! broken pictures: ${r.broken.join(', ')}`);
+    if (s.mobile && r.smallTaps?.length) out.push(`links or buttons under 32px to tap: ${r.smallTaps.slice(0, 4).map((t) => `"${t.text}" ${t.w}×${t.h}`).join(', ')}`);
+    if (r.errors?.length) out.push(`!! script errors: ${r.errors.slice(0, 4).join(' | ')}`);
+    lines.push(`\n${s.name} (${s.width}px):\n  ${out.join('\n  ')}`);
+  }
+  const r0 = seen[0]?.report ?? {};
+  const notes = [];
+  if (r0.h1 !== 1) notes.push(`${r0.h1 ?? 0} <h1> elements — a page has exactly one`);
+  if (r0.sectionsWithoutId) notes.push(`${r0.sectionsWithoutId} <section>s without an id — comments pin to ids`);
+  if (r0.imagesWithoutAlt) notes.push(`${r0.imagesWithoutAlt} pictures without alt text`);
+  if (notes.length) lines.push(`\nStructure: ${notes.join('; ')}.`);
+  const p = [...new Set(problems)];
+  if (p.length) lines.push(`\nWhile loading:\n${p.slice(0, 10).map((x) => `  ${x}`).join('\n')}`);
+  lines.push('\nNext: fix the document, publish again, and look again.');
+  return lines.join('\n');
+}
+
 
 /** A page that is not a deck: its top, at a desktop width, as a reference picture. */
 async function lookAtPage(tab, url) {

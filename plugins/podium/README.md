@@ -10,6 +10,9 @@ then writes a build program. In Claude Code the program runs on your machine; in
 chat, the desktop app and Cowork, Podium runs it with the `build` tool. Either way Claude
 looks at every slide (`look`) and fixes what it sees before handing the deck over.
 
+Your own photos and logos go in through a drop zone Claude opens (`add_pictures`): drop
+them into the Podium panel in the chat, or open the link it gives you.
+
 Connect the Podium connector from this plugin's **Connectors** tab and sign in with your
 Podium account.
 

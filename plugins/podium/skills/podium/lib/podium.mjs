@@ -131,7 +131,7 @@ const env = (k, fallback) => process.env[k] ?? fallback;
  * Set when this program is running on Podium's build service — the `build` tool, for
  * clients with no machine of their own (claude.ai chat). There is no network there and no
  * token: `publish` writes the deck to this file and Podium publishes it once the program
- * exits, and pictures come from the `upload_media` and `generate_image` tools as `/m/…`.
+ * exits, and pictures are `/m/…` paths from the `add_pictures` and `generate_image` tools.
  */
 const BUILD_OUT = env('PODIUM_BUILD_OUT');
 
@@ -140,7 +140,7 @@ async function call(name, args) {
     throw new Error(
       `${name}: this program is running on Podium's build service, which has no network. ` +
       (name === 'upload_media'
-        ? 'Upload a picture with the upload_media or generate_image tool, and put the /m/… path it returns in the program.'
+        ? "Bring the person's pictures in with the add_pictures tool (generated ones with generate_image), and put the /m/… path it returns in the program."
         : 'Call the tool itself; the program only builds the deck.'));
   }
   const url = env('PODIUM_URL', 'https://podium.breezelabs.app');

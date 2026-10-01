@@ -1,6 +1,6 @@
 ---
 name: podium
-description: Build a presentation deck as a program and publish it to Podium — run on your machine, or on Podium itself with the build tool when you have no shell (claude.ai chat). Use when asked to make or design a deck, presentation, slides, pitch or talk. Ask the user about the audience, the one claim, any design or image references they can point at, and whether an image-generation endpoint is available — before building anything, with a thorough brief for decks that carry weight; when they have nothing to point at, search for references with them. There are no templates and no layouts: you invent the design language and arrange every slide yourself.
+description: Build a presentation deck, or a web page people scroll, and publish it to Podium — run on your machine, or on Podium itself with the build tool when you have no shell (claude.ai chat). Use when asked to make or design a deck, presentation, slides, pitch or talk — or a page, one-pager, microsite, web report or landing page. Ask the user about the audience, the one claim, any design or image references they can point at, and whether an image-generation endpoint is available — before building anything, with a thorough brief for decks that carry weight; when they have nothing to point at, search for references with them. There are no templates and no layouts: you invent the design language and arrange every slide yourself.
 ---
 
 # Podium
@@ -16,6 +16,20 @@ grain — and a browser that will show you exactly what you made.
 It is every field, value and default a deck can use — what each text role draws, every
 style key, paint, how pictures load — generated from the code that renders it. The tool
 descriptions are a summary: clients cut them short.
+
+## Decks and pages
+
+Podium hosts two kinds of document, at the same links, with the same comments, versions and
+sharing:
+
+- **A deck** — slides on a fixed plane, clicked through or presented. Everything below is
+  about decks.
+- **A page** — one web page people scroll, built once and holding on a phone and a desktop:
+  a closing note, a launch page, a report. It is one HTML document, not blocks on a plane.
+  **Read `references/pages.md` before you start one.**
+
+The rule: presented, or paged slide by slide → a deck. Read by scrolling, on any screen →
+a page. The brief, the references, the critic and the judge are the same for both.
 
 ## The shape of the work
 
@@ -88,9 +102,10 @@ look({ id, slides: [3, 7] })         → full size
 - `build.mjs` imports from `./lib/podium.mjs`, `./lib/draw.mjs` and `./lib/atmosphere.mjs`
   exactly as above; Podium puts this skill's `lib/` next to it. End with
   `await publish(deck)`, which on Podium hands the deck back instead of calling the server.
-- It runs **offline**, for up to 30 seconds. Pictures come from `generate_image` or
-  `upload_media` first, as `/m/…` paths written into the program. `poster()` and `upload()`
-  do not work there; skip the poster, since a chat has no screenshot file to make it from.
+- It runs **offline**, for up to 30 seconds. Pictures are `/m/…` paths written into the
+  program: the person's own come in through `add_pictures` (below, *Pictures*), generated
+  ones from `generate_image`. `poster()` and `upload()` do not work there; skip the poster,
+  since a chat has no screenshot file to make it from.
 - A program that throws comes back as an error with its output. Fix the file, send it again.
 - `decks({ id, program: true })` returns the kept program, so any later session, yours or
   a teammate's in Claude Code, picks the deck up from the program rather than from the JSON.
@@ -472,7 +487,7 @@ or the deck.**
 Two more in the same breath. **Is generated imagery allowed here at all?** Plenty of
 organisations forbid it in client-facing or regulated material, and the ban is invisible
 until legal sees the deck. **Do you have real photography?** A real picture of their own
-warehouse beats a generated one, and `upload_media` takes either.
+warehouse beats a generated one, and `add_pictures` brings it in.
 
 If the answer is no, say in the same reply what you are doing instead, and design a deck
 that does not want photographs rather than one with holes in it.
@@ -555,6 +570,18 @@ every deck. So before you hand anything over, be that judge:
    scale — never your program or your reasoning — and returns scores and the three changes
    that would raise it most. Make them, and judge again while it is under 4 (at most twice
    more). With no way to start a subagent, judge it yourself from the pictures alone.
+
+5. **Then three checks of your own, every time:**
+   - **The brief is current.** Every decision made during the build — a colour that
+     changed, a rule broken on purpose (a three-line cover, a slide over the word budget),
+     a direction dropped — goes into `brief` on the last publish. The next session reads the
+     brief, not your memory, and a stale one sends it back to undo a deliberate choice.
+   - **No warning you caused is left unexplained.** Read `warnings[]` on the last publish.
+     Fix every one your build introduced; one you keep on purpose gets a line in the brief
+     saying why. A deck is not handed over with a warning nobody has looked at.
+   - **Claim only what you checked.** Say what the deck shows, not what you assume it does:
+     a drawn barcode is "barcode-styled" unless you scanned it, a figure is "illustrative"
+     unless the person gave it to you, a font "loaded" only if eyes said so.
 
 Hand it over in three lines: what it is, what you assumed, and the link.
 
@@ -804,18 +831,27 @@ It ruins one when it is the composition. The rules, in the order they bite:
   is optional; a program that only works on the machine that generated it is not a program
   somebody can download.
 
-Hand the file to `upload_media`, put the returned `/m/<id>` on `bg.image` or an image
-block. A picture from `generate_image` is already there; use its `src`.
+**The person's own pictures come in through `add_pictures`**, in every client:
+
+1. `add_pictures({ project })` opens a drop zone: a panel in the chat, and a link. Tell the
+   person what the result's `tell` says. Ask even when they already attached the pictures
+   to a message: an attachment reaches you, never Podium, and you cannot send it on.
+2. When they say they are done, `add_pictures({ session })` returns each picture's `src`
+   and shows you the pictures, so you can place them and write their alt text.
+
+Put the `src` on `bg.image` or an image block. A picture from `generate_image` is already
+there; use its `src`.
 
 ## The tools
 
 | | |
 |---|---|
-| `publish` | the whole deck, every time. Returns `warnings[]` and a preview URL. `visibility: "unlisted"` puts it behind a link. |
+| `publish` | the whole deck, every time. Returns `warnings[]` and a preview URL. `visibility: "unlisted"` puts it behind a link. A page is `{ kind: "page", id, title, html }`, and later edits can be `patch: [{ find, replace }]` (references/pages.md) |
 | `build` | the program instead of the deck: Podium runs it offline and publishes what it writes, and keeps it with the deck. For when you have no shell |
 | `look` | Podium renders the deck and returns the slides as pictures with the measurements — eyes, for when you have no machine |
 | `preview` | a signed, account-free URL showing every slide on one page, animations frozen |
-| `upload_media` | base64 in, `/m/<id>` out |
+| `add_pictures` | the person's own pictures: opens a drop zone, then returns each one's `/m/<id>` and shows it to you |
+| `upload_media` | base64 in, `/m/<id>` out — for a file your program already holds, like the poster screenshot |
 | `generate_image` | slide art from Podium's own image model, in the deck's palette, straight into the project's media. Only for accounts the admin has turned it on for; `check: true` asks first |
 | `decks` | the library; with an `id`, the deck as JSON, and its open comments |
 | `presets` | the shelf of published design languages. **Only on the user's instruction** — see above. With `from`, saves one of yours. |

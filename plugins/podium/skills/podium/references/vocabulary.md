@@ -187,7 +187,8 @@ An aurora ground, a glass card and a glowing number:
                "shadow": { "y": 30, "blur": 80, "color": "#00000066" } }, "blocks": [ … ] }
   { "type": "text", "role": "giant", "text": "10M", "style": { "textFill": { "angle": 100, "stops": ["#FFB36B", "accent"] } } }
 
-PICTURES — every one is "/m/<id>", from upload_media or generate_image, and it works in
+PICTURES — every one is "/m/<id>": the person's own from add_pictures, generated ones from
+generate_image. It works in
 three places: an image block's src, a slide's bg.image, and <image href="/m/<id>"> inside
 svg source, where masks, clips and blends apply to it. Share links re-sign them. Nothing
 else loads: no outside URLs, no data: URIs.
