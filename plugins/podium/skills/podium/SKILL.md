@@ -1,6 +1,6 @@
 ---
 name: podium
-description: Build a presentation deck, or a web page people scroll, and publish it to Podium — run on your machine, or on Podium itself with the build tool when you have no shell (claude.ai chat). Use when asked to make or design a deck, presentation, slides, pitch or talk — or a page, one-pager, microsite, web report or landing page. Your first reply is questions, not a deck: the audience, the one claim, something to point at, and — when image generation is off for them — whether to get access or go without. Then show two or three covers as pictures and let them pick before you build; when they have nothing to point at, search for references with them. There are no templates and no layouts: you invent the design language and arrange every slide yourself.
+description: Build a presentation deck, or a web page people scroll, and publish it to Podium — run on your machine, or on Podium itself with the build tool when you have no shell (claude.ai chat). Use when asked to make or design a deck, presentation, slides, pitch or talk — or a page, one-pager, microsite, web report or landing page. Your first reply is questions, not a deck — and always first among them, something to point at (a Pinterest pin or board, a Behance or Dribbble shot, a screenshot, a deck or site they like), then the audience, the one claim, and — when image generation is off for them — whether to get access or go without. Then show two or three covers as pictures and let them pick before you build; when they have nothing to point at, search for references with them. There are no templates and no layouts: you invent the design language and arrange every slide yourself.
 ---
 
 # Podium
@@ -23,13 +23,18 @@ A one-line request — *"make me a deck about Q3"* — settles neither of the tw
 decide whether the deck is any good: what it is for, and how it looks. So the first ten
 minutes always run the same way, and the person's first deck depends on them:
 
-1. **Questions, one batch** (*Ask before you build*): the decision and the one person; how
+1. **Questions, one batch** (*Ask before you build*), and **the reference question always
+   first**: *"Is there anything you can point at — a Pinterest pin or board, a Behance or
+   Dribbble shot, a screenshot, a deck or a site you like? Two is better than one."* A
+   reference is the one answer that most improves the deck, and asking it first gives them
+   time to find one while they answer the rest. Then the decision and the one person; how
    it reaches the room and on what screen; what must not be on it and where the numbers
-   come from; something to point at. A default marked on each. Call
+   come from. A default marked on each. Call
    `generate_image({ check: true })` first: if it is off, the batch offers the choice
    (*Image generation*).
 2. **Covers, as pictures** (*Directions*): two or three covers in looks that disagree, each
-   with one crafted object on it (*Make it memorable*), as one small deck. They pick from
+   with one crafted object on it — generated, when generation is on (*Making the hero
+   object*) — as one small deck. They pick from
    the pictures, not from your descriptions.
 3. **The argument**, as slide titles that are claims. Approve, or say what moves.
 4. **Then build** — the program, looking at every slide — and run the critic and the judge
@@ -244,7 +249,13 @@ minutes, presented" against "sent as a link" settles length and density in one s
 
 ### What to spend the four slots on
 
-In rough order. Take the first four that apply to this deck.
+**One slot is always the reference question** (*References*, below) — asked first, never
+traded away for another. It is the single answer that most improves a deck: a deck built
+from something the person pointed at lands; one built from adjectives drifts to the same
+generic look every time. If they have nothing, the question still did its job — offer to
+search together, or let the covers be the question.
+
+Spend the other three in rough order, on the first that apply to this deck:
 
 1. **What do you want the room to *do* when it ends, and who is the one person whose
    mind has to change?** Ask for a name and a job, not a segment. This is the only
@@ -266,19 +277,18 @@ In rough order. Take the first four that apply to this deck.
    means the OS UI font and empty plates at the moment it matters.
 4. **Does a house style bind this, or is it yours to invent?** If it goes to brand
    review and you invented a palette, the review kills the deck.
-5. **Design references** — below, and worth a slot on almost every deck.
-6. **A preset to start from** — below. One line inside the references question, not a
+5. **A preset to start from** — below. One line inside the references question, not a
    slot of its own: *"is there a preset you want to start from? Browse `<podium>/presets`
    — or say no and I'll invent one."* The default is **no**.
-7. **Image generation** — below, but only after you have checked whether it is already
+6. **Image generation** — below, but only after you have checked whether it is already
    configured.
-8. **What must not be in this deck?** Ask it in those words. People will spend ten
+7. **What must not be in this deck?** Ask it in those words. People will spend ten
    minutes on what the deck should say and never mention that a competitor cannot be
    named, that a customer's logo is not cleared, that headcount is not shown, that a
    roadmap date was walked back last week, or that the person in the case study has
    left. None of it is secret and none of it is volunteered, because to them it is
    background and to you it is a landmine.
-9. **Where does each number come from, and can it appear on a link that leaves the
+8. **Where does each number come from, and can it appear on a link that leaves the
    room?** Not whether the numbers are right — whether they are publishable. A figure
    can be true, sourced and still under NDA, and a share link is a link. Sort them into
    published, internal, and illustrative. Illustrative gets labelled on the slide, not
@@ -297,9 +307,10 @@ the previous deck's theme with `decks` rather than describing it off a screensho
 
 Adjectives cannot start a design. Nobody has ever asked for a dirty, dated deck, so
 "clean and modern" constrains nothing. Ask instead: **is there anything you can point
-at?** — and list the forms, because people assume you mean a template and do not think
-the paperback on their desk counts. It counts, and the physical one they picked up
-themselves is usually the best of the lot.
+at?** — and list the forms, because people assume you mean a template: *a Pinterest pin
+or board, a Behance or Dribbble shot, an Awwwards site, a screenshot, a deck or report
+they admired, a poster, a photo of a printed thing.* The paperback on their desk counts
+too, and the physical one they picked up themselves is usually the best of the lot.
 
 Ask for two. One reference is ambiguous — you cannot tell which part they liked. Two
 share something, and the shared thing is the brief.
@@ -310,7 +321,7 @@ share something, and the shared thing is the brief.
 | **a PDF** — their deck, a report, a brand guide | `Read` it with a page range. Take the cover, one dense page and one sparse one. The cover shows the ambition, the dense page shows the real body size. |
 | **a .pptx** | It is a zip. `ppt/theme/theme1.xml` has the exact colours and the major/minor font names; `ppt/media/` has the imagery. That gets you the palette, not the look — for the look ask for four slides exported as PDF or PNG. |
 | **Keynote, Canva, Figma** | Ask for a PDF or PNG export. One exported frame tells you more than the source file and costs nothing. |
-| **a URL** | Fetching it strips the design and hands you text, which is the opposite of what you want. Hand it to eyes, `node lib/eyes.mjs "<url>"` (or `look`): any URL that is not a deck comes back as a picture of the page. |
+| **a URL** | Fetching it strips the design and hands you text, which is the opposite of what you want. Hand it to eyes, `node lib/eyes.mjs "<url>"`: any URL that is not a deck comes back as a picture of the page. **Pinterest, Behance and Dribbble** often answer a browser with a sign-in wall — if the picture is a login page, ask for a screenshot or the image's own link (right-click → copy image address) rather than guessing from the title. With no shell, ask for the screenshot straight away. |
 | **a name with no file** — "like the Economist" | Say back what you think they mean, in specifics: *near-black ground, one red, a serif at two sizes and nothing between them.* Half the time the correction is the brief. |
 | **nothing** | Search with them — *When they have nothing to point at*, below. Or build the cover three ways (*Directions*, below) and let the pictures be the question. |
 
@@ -418,8 +429,8 @@ guide as the brief produces the brand's website reformatted as slides.
 Check before you ask: `generate_image({ check: true })` says whether the admin has turned
 Podium's image model on for this account and how many pictures are left. It makes nothing.
 
-- **On:** the question is whether this deck wants pictures at all. Often it does not — a
-  drawn or typographic deck is usually the stronger one.
+- **On:** plan the cover's object around it (*Making the hero object*). If this deck is
+  better drawn or typographic, decide that on purpose and say so.
 - **Off:** it goes in the first batch, because it decides the design language rather than
   decorating it. The check names the admin who can turn it on; put that name in: *"Image
   generation is off for your account; <admin> can turn it on. Get access and I'll design
@@ -663,7 +674,9 @@ What the kept decks shared:
 - **For a B2B explainer, borrow print craft** — engraving, guilloche, a docket, a receipt, a
   form — rather than a software kit of pills, rails and rounded cards.
 
-None of this is a style. Dark and light, violet and paper, an orb and a drawing all passed.
+With generation on, that object is usually a render made for this deck (*Making the hero
+object*). None of this is a style. Dark and light, violet and paper, an orb and a drawing
+all passed.
 What failed was the absence of an object and an idea you can see. The objects above are
 what passed, not a menu: this deck's object comes from this deck's subject, the way its
 palette does (*Inventing the design language*).
@@ -726,13 +739,16 @@ The instinct this tool most needs you to fight is the one that makes every deck 
 
 ## Pictures
 
-A deck needs none. The strongest languages here are typographic or drawn, and an `svg`
-block is sharper at every size, takes the theme's colours through `color: "accent"`, and
-needs nothing installed.
+When image generation is on, it is usually what makes the cover. In hand-sorted decks the
+covers people kept were mostly **one generated object made for that deck** — a single glass
+tile for a company called tessel, an orb with a light inside for a product sold as a
+"sidekick" — and the generated pictures people rejected were stock: frosted cubes, a glass
+kiosk, a running shoe. A good generation is the cheapest way to a deck people keep; a
+generic one is the fastest way to a deck they reject.
 
-Where a picture genuinely beats a drawing — and only once you have established that
-generation is available, which is a question you asked before you chose a design
-language — make art that already belongs to the deck. Through Podium, one call:
+A deck can also be excellent with none — typographic, or drawn in `svg`, which is sharp at
+every size and takes the theme's colours through `color: "accent"`. Decide that on purpose,
+not because generating felt like effort. Through Podium, one call:
 
 ```js
 generate_image({ prompt: "an iridescent glass orb, lit from inside", anchor: "render",
@@ -750,6 +766,31 @@ The style anchor is prepended verbatim to every prompt, so only the subject clau
 generate the whole set, then review them **as a set** and regenerate the outliers.
 Reviewing one at a time is how you end up with five styles in one deck.
 
+### Making the hero object
+
+1. **Name the object before you prompt.** One thing this deck owns, from its subject — the
+   company's name, the product's metaphor, the thing the argument is about: a tile, an orb,
+   a till roll, a matchbox. If it could sit on any company's deck, it is stock: people round
+   a laptop, a cube, a kiosk, a city at night, a handshake.
+2. **Prompt the object, not the mood.** Material, form, the one detail that makes it yours,
+   and where the light comes from — *"a single rounded glass tile, thick and bevelled, lit
+   from inside, one corner catching the light"*, not *"a futuristic abstract shape"*. The
+   anchor carries the style and `register` the mood.
+3. **The hero is `render` with `transparent: true`.** A cut-out sits on your ground with a
+   glow behind it (`lib/atmosphere.mjs`). `art` for a drawn set — a read
+   deck's engraved telephone, a docket — on the paper's own colour; `photo` only for
+   something real.
+4. **Make three at `quality: "medium"`, pick by looking, then make the keeper at `"high"`.**
+   The first is rarely the one. Medium takes about forty seconds, high two to three
+   minutes, so explore at medium. Check what is left with `check: true`, put the three side
+   by side, keep the one with presence, and say which and why in the brief. In the directions round each cover can carry a
+   different candidate, so the person picks the object too.
+5. **Place it big, and let it recur.** 600–800px on the 1920 plane on the cover, never a
+   thumbnail in a corner; then back on two or three slides — cropped by the frame, smaller
+   beside a figure, behind glass — changing as the argument moves (the floor, rule 10).
+6. **Reject what is broken.** Garbled marks, an extra part, a halo or a box round a
+   cut-out, a shape that reads as something else at thumbnail size: regenerate, never ship.
+
 Two things worth knowing before you spend a call:
 
 - **Ban lettering.** Generated text looks right at a glance and is garbled up close. Set
@@ -763,11 +804,12 @@ Two things worth knowing before you spend a call:
 
 ### Where a picture goes
 
-Art improves a deck when it is **rare, small and in a hole the composition already left**.
-It ruins one when it is the composition. The rules, in the order they bite:
+Beyond the hero object, art improves a deck when it is **rare, small and in a hole the
+composition already left**. It ruins one when it is the composition. The rules, in the
+order they bite:
 
-- **One or two in a deck, not one a slide.** Nothing enforces a ceiling; the restraint is
-  the design, and past three is where a language turns into a brochure.
+- **The hero object, and one or two more — not one a slide.** Nothing enforces a ceiling;
+  the restraint is the design, and past three is where a language turns into a brochure.
 - **Into the space the argument does not need.** A statement slide with a short sentence
   has an empty half; put it there. Never behind the copy, never as a full-bleed background
   with a headline over it unless the language is built for that.

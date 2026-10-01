@@ -24,6 +24,9 @@ The opposite register is `cinematic.md`. Pick by what the room does with the dec
 3. **The product is drawn, not screenshotted**: a phone mid-call, a payment page with the
    widget open, a console with numbered annotations — drawn in blocks and svg, so it is
    sharp, on-palette and editable.
+   **And the deck's object can be generated** — an engraved telephone, a till roll, a
+   cheque's rosette — as `art` on the paper's own colour, flat, big enough to recognise in
+   a thumbnail (SKILL.md, *Making the hero object*).
 4. **Chapter dividers are poster moments**: the chapter's title at cover size, or one
    object from the deck's world drawn big — on an inverted ground with a glow, or on the
    paper itself. Not a ghost numeral behind the title: that is the cliché people reject.

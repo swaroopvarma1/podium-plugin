@@ -17,18 +17,23 @@ The rule from `SKILL.md` still holds inside every round:
 Skip any question the conversation has already answered, and say that you did: *"You said
 it's for the board on Thursday, so I haven't asked about the audience."*
 
-## Round 1 — the room
+## Round 1 — the room, and something to point at
 
-1. **What should the room do when it ends, and who has to be convinced?** A name and a
+1. **Is there anything you can point at?** First, every time: a Pinterest pin or board, a
+   Behance or Dribbble shot, a screenshot, a deck, a poster, a site. Two is better than
+   one. Offer *"Find me some"* as an option, which runs *When they have nothing to point
+   at* in `SKILL.md`, and a preset as one line inside the question (default: no). Asked
+   first so they can go and find one while they answer the rest.
+   *Changes:* the register — how loud, how dense, how much air — and whether the deck
+   lands or drifts to the generic look.
+2. **What should the room do when it ends, and who has to be convinced?** A name and a
    job, not a segment. The one free-text answer worth waiting for.
    *Changes:* the cutting rule. Every slide that does not move that person goes.
-2. **Presented live, read alone, or presented by somebody who is not you?**
+3. **Presented live, read alone, or presented by somebody who is not you?**
    *Changes:* words per slide, the type scale, and whether `notes` are cues or sentences.
-3. **Where is it seen?** A projector in a lit room, a shared screen on a call, a phone, a
+4. **Where is it seen?** A projector in a lit room, a shared screen on a call, a phone, a
    recording. Ask about the network in the same breath.
    *Changes:* the ground (deep grounds go grey on projectors), the smallest size, hairlines.
-4. **How long?** Five minutes, twenty, an hour; or as long as it needs, if it is read.
-   *Changes:* slide count, and how much each slide carries.
 
 ## Round 2 — what goes in, and what must not
 
@@ -46,15 +51,13 @@ it's for the board on Thursday, so I haven't asked about the audience."*
    *Changes:* the faces (a Latin display face has no Devanagari), whether to redesign at
    all, and how much time the review pass gets.
 
-## Round 3 — the look
+## Round 3 — the look, and the length
 
 9. **Does a house style bind this?** Match it, break from it, keep the shell but not the
    inside, or no house style.
    *Changes:* whether the design language is yours to invent.
-10. **Is there anything you can point at?** Their own screenshots, a deck, a poster, links.
-    Offer *"Find me some"* as an option, which runs *When they have nothing to point at* in
-    `SKILL.md`, and a preset as one line inside the question (default: no).
-    *Changes:* the register — how loud, how dense, how much air.
+10. **How long?** Five minutes, twenty, an hour; or as long as it needs, if it is read.
+    *Changes:* slide count, and how much each slide carries.
 11. **What do you hate?** Offer objects to reject, not adjectives: a gradient ground, a stock
     photo of people round a laptop, three columns of icon-heading-paragraph, thin grey type
     on white.
