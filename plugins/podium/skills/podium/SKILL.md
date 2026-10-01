@@ -1,6 +1,6 @@
 ---
 name: podium
-description: Build a presentation deck, or a web page people scroll, and publish it to Podium — run on your machine, or on Podium itself with the build tool when you have no shell (claude.ai chat). Use when asked to make or design a deck, presentation, slides, pitch or talk — or a page, one-pager, microsite, web report or landing page. Ask the user about the audience, the one claim, any design or image references they can point at, and whether an image-generation endpoint is available — before building anything, with a thorough brief for decks that carry weight; when they have nothing to point at, search for references with them. There are no templates and no layouts: you invent the design language and arrange every slide yourself.
+description: Build a presentation deck, or a web page people scroll, and publish it to Podium — run on your machine, or on Podium itself with the build tool when you have no shell (claude.ai chat). Use when asked to make or design a deck, presentation, slides, pitch or talk — or a page, one-pager, microsite, web report or landing page. Your first reply is questions, not a deck: the audience, the one claim, something to point at, and — when image generation is off for them — whether to get access or go without. Then show two or three covers as pictures and let them pick before you build; when they have nothing to point at, search for references with them. There are no templates and no layouts: you invent the design language and arrange every slide yourself.
 ---
 
 # Podium
@@ -16,6 +16,28 @@ grain — and a browser that will show you exactly what you made.
 It is every field, value and default a deck can use — what each text role draws, every
 style key, paint, how pictures load — generated from the code that renders it. The tool
 descriptions are a summary: clients cut them short.
+
+## The first ten minutes
+
+A one-line request — *"make me a deck about Q3"* — settles neither of the two things that
+decide whether the deck is any good: what it is for, and how it looks. So the first ten
+minutes always run the same way, and the person's first deck depends on them:
+
+1. **Questions, one batch** (*Ask before you build*): the decision and the one person; how
+   it reaches the room and on what screen; what must not be on it and where the numbers
+   come from; something to point at. A default marked on each. Call
+   `generate_image({ check: true })` first: if it is off, the batch offers the choice
+   (*Image generation*).
+2. **Covers, as pictures** (*Directions*): two or three covers in looks that disagree, each
+   with one crafted object on it (*Make it memorable*), as one small deck. They pick from
+   the pictures, not from your descriptions.
+3. **The argument**, as slide titles that are claims. Approve, or say what moves.
+4. **Then build** — the program, looking at every slide — and run the critic and the judge
+   before anybody else sees it.
+
+Skip step 2 only when the look is already decided: a reference they handed you, a house
+style that binds, a preset they named, the next instalment of a series. "Quick" is not a
+reason to skip it — a deck whose look nobody chose is the deck people reject.
 
 ## Decks and pages
 
@@ -49,9 +71,9 @@ brief  →  references  →  directions  →  outline  →  build ⟲ look  → 
 Ask first (*Ask before you build*); find something to point at; show two or three
 directions as one slide each and let them pick; agree the argument as a list of slide
 titles; build; then review every slide against a written list before anybody else sees it.
-A quick deck whose look and argument are already settled skips straight from the brief to
-the build. A deck that carries weight does every step, because each one is minutes and
-each one it skips is a rebuild.
+Only a deck whose look and argument are already settled — by a reference, a house style,
+a named preset, an instalment — skips straight from the brief to the build. Every other
+deck does every step, because each one is minutes and each one it skips is a rebuild.
 
 That loop is the whole method, and the program is not a convenience. It is the thing that
 makes a deck possible to design: the grid becomes arithmetic instead of guesswork, a mark
@@ -72,8 +94,11 @@ import { rng, noise, hatch, contours, stipple } from './lib/draw.mjs';
 import { aurora, dusk, spotlight, glow, glass, stars } from './lib/atmosphere.mjs';  // light, in your colours
 ```
 
-`node build.mjs` writes and publishes. Then **look**, with the `look` URL that `publish`
-returned:
+`node build.mjs` writes and publishes. It finds Podium's token by itself: `PODIUM_TOKEN`
+when set, otherwise the token in Claude Code's own `podium` entry, which is where Settings'
+command puts it. With no token on the machine — the Claude plugin signs in without one —
+send the program to the `build` tool instead (*No shell?*, below); everything else holds.
+Then **look**, with the `look` URL that `publish` returned:
 
 ```bash
 node lib/eyes.mjs "<look-url>"              # every slide, twelve to a picture → shots/
@@ -121,17 +146,8 @@ no restart. If Chrome lives somewhere unusual, set `PODIUM_CHROME` to the browse
 (Chromium, Edge and Brave work too). If this skill is not on the machine, the file is also
 at `https://podium.breezelabs.app/skill/lib/eyes.mjs`: one file, Node built-ins only.
 
-The same file is also an MCP server with one tool, `look`, which returns the pictures
-inside the tool result. That is optional, and it is the way to look from a client with no
-shell, such as Claude Desktop (put the same command in its MCP config). In Claude Code it
-is one command, and takes effect from the next session:
-
-```bash
-claude mcp add --scope user podium-eyes -- node ${CLAUDE_SKILL_DIR}/lib/eyes.mjs
-```
-
-Use `look` when you have it, and the command when you don't. Looking is not optional in
-either case.
+No Chrome on the machine, or no machine: Podium's own `look` tool renders the deck and
+returns the same pictures and measurements. Looking is not optional either way.
 
 `lib/podium.mjs`, `lib/draw.mjs` and `lib/eyes.mjs` need nothing but Node (and, for eyes, the
 Chrome). `lib/look.mjs` and `lib/pdf.mjs`
@@ -151,8 +167,8 @@ deck.poster = await poster('shots/slide-01.png', deck);   // from lib/podium.mjs
 await publish(deck, { visibility: 'unlisted' });
 ```
 
-Podium cannot make that image itself and will not — there is no browser on the server,
-which is the reason it costs nothing to run. Yours already has one open.
+Podium's `look` shows you the slides but keeps no poster for you, so write the cover to a
+file with eyes and attach it as above.
 
 `node lib/pdf.mjs <share-url> deck.pdf` is the third one, because almost every deck gets
 emailed in the end. It needs the SHARE link rather than the stage, which is behind the
@@ -357,70 +373,14 @@ mood pictures in candidate palettes, to react to rather than to use.
 else's work. Pictures in a deck are the person's own, licensed (Unsplash's licence allows
 it; note where each one came from), or generated.
 
-### Starting from a preset — only if they ask for one
+### Presets — only if they ask
 
-A **preset** is a design language somebody published: a theme, the program that draws its
-marks, and a few slides as a sample. They live at `<podium>/presets` and the `presets`
-tool reads them.
-
-**You do not pick one. Ever.** Ask, in the same breath as the references question, and
-take *no* as the good answer it usually is. This is not a style rule, it is the entire
-reason the registry is allowed to exist: what got deleted from this product was a fixed
-menu of built-in design languages handed to every agent, and two agents on two different
-services both reached for the same entry and produced the same deck. A registry a
-**person** browses is a shelf. A registry an **agent** browses is that menu again, with
-more entries on it.
-
-So the question is *"is there a preset you want to start from?"* — never *"I found these
-three, which do you like?"* If you catch yourself calling `presets` with no id in order to
-decide something, stop: that call is for showing the user what exists, and they are
-already looking at the gallery.
-
-When they do name one:
-
-```
-presets({ id: "riso" })        →  theme, sample, and files[{path, body}]
-```
-
-1. **Write the files next to your deck** and import them. They are the reason a preset is
-   worth anything — a theme on its own gets copied as a palette, and a palette without its
-   grid, its scale and its one signature move is a recolour.
-2. **Read them before you run them.** This is somebody else's code, arriving over a wire,
-   and you are about to execute it on your user's machine. Skim every file. If a build
-   script reaches outside its own folder, touches the network, or reads anything it did not
-   ship with, stop and tell the user what you found instead of running it. Podium checks
-   the *paths* — no `..`, no absolute paths, no hidden files — and that is all it can check.
-   The contents are your job. The presets Podium ships write `deck.json` and nothing else
-   when run as `node build.mjs`; they publish only when you add `--publish`, so running
-   one to look at it never puts a deck in the user's library.
-3. **Then take it somewhere.** Inherit the scale and the grid; change the palette, the
-   marks, the arrangement, or all three. The test is at the end of this file and it does
-   not get relaxed because you started from something: if a person could tell your deck
-   was built from that preset, you stopped too early. You are not filling in a form, you
-   are borrowing a starting point that somebody else has already proved works.
-
-Say back what you took, the same as with any reference: *"I am taking riso's stroked-box
-furniture and its refusal of a third colour. I am not taking the two inks — this deck is
-about water, so the second ink is a blue-green and the repeats are wave geometry rather
-than 青海波."*
-
-### Offer to save it, when it turns out well
-
-At the end, if the language you invented is genuinely good and the user is likely to want
-another deck in it, offer to publish it:
-
-```
-presets({ from: "project/deck", name: "…", summary: "…", tags: [...],
-          slides: ["cover", "…"], files: [{ path: "marks.mjs", body: … }] })
-```
-
-**Send the files.** Saving from the web UI cannot — the browser has never seen your
-`build.mjs` — so a preset saved that way is a palette, and the tool will tell you so in
-`next` rather than pretending it worked. Sending the program is the difference between a
-design somebody can build on and a swatch they will misuse.
-
-Offer; do not do it unasked. It is their design language and it goes on a shelf with their
-name on it.
+A preset is a design language somebody published: a theme, the program that draws its
+marks, and a few sample slides, at `<podium>/presets`. **You never pick one, suggest one
+by name, or lean the deck towards one** — do not call `presets` to go looking. Ask once,
+inside the references question — *"is there a preset you want to start from? — or I'll
+invent one"* — default no, and invent the language from the subject. When they name one, or a deck turns out well enough to save as one, read
+`references/presets.md` first: it is somebody else's code, and you are about to run it.
 
 ### Ask what they hate
 
@@ -455,42 +415,25 @@ guide as the brief produces the brand's website reformatted as slides.
 
 ### Image generation: check, then ask
 
-Look before you ask. Generation may already be available in two ways:
+Check before you ask: `generate_image({ check: true })` says whether the admin has turned
+Podium's image model on for this account and how many pictures are left. It makes nothing.
 
-- **Podium's own model.** `generate_image({ check: true })` answers whether the admin has
-  turned it on for this account, and how many pictures are left in the next 24 hours. It
-  makes nothing. If it is on, this is the route: no key, nothing to install, and the
-  picture lands in Podium ready for a slide. If it says it is not enabled, do not retry:
-  tell the person, who can ask the admin the message names, and design without.
-- **A model of your own.** `IMAGE_ENDPOINT`, `AZURE_IMAGE_ENDPOINT` or `OPENAI_API_KEY` in
-  the environment, or a `~/.claude/.deck-secrets.env`.
+- **On:** the question is whether this deck wants pictures at all. Often it does not — a
+  drawn or typographic deck is usually the stronger one.
+- **Off:** it goes in the first batch, because it decides the design language rather than
+  decorating it. The check names the admin who can turn it on; put that name in: *"Image
+  generation is off for your account; <admin> can turn it on. Get access and I'll design
+  with pictures, or go without — a drawn, typographic deck?"* Default: without. If they go for access, wait for them to
+  say it is on before you choose the look; do not retry the check in a loop.
 
-If either is there, the real question is whether this deck wants pictures at all — the
-answer is often no, and a drawn or typographic deck is usually the stronger one.
-
-If none of them is there, ask, because the answer decides the design language rather than
-decorating it. A deck laid out around six plates and shipped with two is worse than a
-typographic deck designed as one from the start, and discovering the gap at slide nine
-means redesigning the ground, the crops and the grid.
-
-Make it answerable. `scripts/generate-image.ts` posts `{prompt, n, size, quality}` and
-reads `b64_json` back, so anything speaking the images API will do — set
-`IMAGE_ENDPOINT` + `IMAGE_API_KEY` for a gateway, `AZURE_IMAGE_ENDPOINT` +
-`AZURE_IMAGE_KEY` for an Azure deployment, or `OPENAI_API_KEY` on its own and pick a
-model with `--model`. Each key is only ever sent to its own endpoint. So the question is
-"is there an image endpoint your agents can reach, and a key for it", not "which model" —
-though ask which, because it decides how literally you can specify a style. Without any of them the script stops with a named
-error rather than failing quietly. Two lines in `~/.claude/.deck-secrets.env`, mode 600
-— **never ask anyone to paste a key into the chat, and never write one into `build.mjs`
-or the deck.**
+A deck laid out around six plates and shipped with two is worse than a typographic deck
+designed as one from the start, and discovering the gap at slide nine means redesigning the
+ground, the crops and the grid.
 
 Two more in the same breath. **Is generated imagery allowed here at all?** Plenty of
 organisations forbid it in client-facing or regulated material, and the ban is invisible
 until legal sees the deck. **Do you have real photography?** A real picture of their own
 warehouse beats a generated one, and `add_pictures` brings it in.
-
-If the answer is no, say in the same reply what you are doing instead, and design a deck
-that does not want photographs rather than one with holes in it.
 
 ### What actually blocks
 
@@ -527,7 +470,7 @@ words. If they said fifteen minutes, it is fifteen minutes.
 ## Directions, then the outline
 
 **Directions.** Before forty slides, show two or three ways the deck could look, each as
-ONE finished slide: the cover, or the slide that carries the signature move. Make them
+ONE finished slide: the cover, carrying its one crafted object (*Make it memorable*). Make them
 disagree on every axis you can — a lit ground against a paper one, a serif against a
 grotesk, one family against a pair, loud against quiet — and name each as a noun phrase
 from THIS subject (*"harbour at dawn: fog ground, one signal colour, a slab serif"* is the
@@ -542,8 +485,8 @@ from a description is a guess you will both revisit at slide twenty.
 number and where the ask is. One question: approve, or say what moves. Cutting a slide
 here costs a line; cutting it after the build costs the layout around it.
 
-Skip either one when it is already settled: a house style that binds leaves no direction
-to choose, and an argument they handed you as a document needs no outline check.
+Skip the directions only when the look is already decided (*The first ten minutes*), and
+the outline only when they handed you the argument as a document.
 
 ## Review before you hand it over — the critic
 
@@ -557,7 +500,8 @@ every deck. So before you hand anything over, be that judge:
    grade from 1 to 5 against the bar — would it hold its own beside the best keynote you
    know (presented), or a page from the best annual report you know (read)? A 4 has one
    unmistakable hero, a ground and colour chosen rather than defaulted, nothing under 24px,
-   and the proof reaching the lower third. A 3 is tidy and forgettable. (The scale is
+   and the proof reaching the lower third. A 3 is tidy and forgettable. Grade the cover
+   twice: does it carry one crafted object, and does the idea show at thumbnail size? (The scale is
    `references/judge.md`; it rewards craft, never a style.)
 2. Take the three lowest slides and **rebuild** them — change the composition, not the
    font size: the number becomes the hero, the diagram takes two thirds of the frame, the
@@ -657,13 +601,15 @@ Say which in the brief (`direction`). Either way, the floor — every deck, ever
    deck". Eyes: `no hero`, `statement under hero scale`.
 4. On a slide that exists for a number, the number is the biggest thing on it, at 280px or
    more. Eyes: `figure under hero scale`.
-5. Light with range on every slide: a glow behind the subject — behind every hero figure
-   and every drawn screen — a gradient whose far edge is 25–35% darker than its lit corner,
-   or a photograph (`lib/atmosphere.mjs`). A 2–4% wash and a little grain read as flat; a
-   flat field is fine only when the colour itself is the design. **The room decides how
-   light the ground is:** a projector in a dim room wants a dark, lit ground (light paper
-   glares there); a deck read on a laptop can be light. Variety between decks comes from
-   hue and material, never from putting a dim-room talk on white. Eyes: `flat grounds`.
+5. **Dark grounds get light with range:** a glow behind the subject — behind every hero
+   figure and every drawn screen — a gradient whose far edge is 25–35% darker than its lit
+   corner, or a photograph (`lib/atmosphere.mjs`). A 2–4% wash and a little grain read as
+   flat. **Paper stays flat and its colour clear** — salmon, rose, cream, a printed blue —
+   never lit from a corner, which turns it khaki, sage or grey; the depth on paper comes
+   from the object drawn on it. **The room decides how light the ground is:** a projector
+   in a dim room wants a dark, lit ground (light paper glares there); a deck read on a
+   laptop can be light. Variety between decks comes from hue and material, never from
+   putting a dim-room talk on white. Eyes: `flat grounds` (dark grounds only).
 6. No more than three slides in a row with the same skeleton, and a statement slide —
    200px+, almost nothing else — after every three or four proof slides. Eyes: `proof run`.
 7. Headlines break where the sense breaks: a real newline, never "sign- / ups".
@@ -693,6 +639,34 @@ with `node lib/eyes.mjs "<look-url>" --slides 4.1` (slide 4 after its first clic
 **Warm paper, a serif and a red or orange accent is where every model drifts** when
 nothing pushes it elsewhere — the evals measured four decks in eight landing on it. Go
 there only when the brief asks for it.
+
+## Make it memorable
+
+The judge's numbers and a person's taste are not the same thing. When twenty-seven finished
+decks were sorted by hand, the ones kept had character and the ones rejected were correct
+and generic — including decks the judge scored over 4 and eyes had nothing to say about.
+What the kept decks shared:
+
+- **The cover carries one crafted object** — a glass tile lit from inside, an engraved
+  rosette, a till receipt, a drawn service bay, a matchbox. A cover that is a title over a
+  progress rail, an arc or a row of boxes was rejected every time.
+- **The idea shows at thumbnail size.** If the metaphor lives only in the theme's name
+  ("isolux", "drafting film") and on the slide it is faint rings or a grey vignette, it is
+  not there. Pick a physical artefact the audience knows and draw it big enough to
+  recognise in a thumbnail.
+- **Paper stays flat and its colour clear** (the floor, rule 5). Corner-lit paper went
+  khaki, sage and grey, and was rejected.
+- **A read-closely deck still has poster moments:** a type or picture hero at poster scale
+  every three or four slides, or it becomes table after table.
+- **Leave out the clichés:** ghost chapter numerals behind the content, tall condensed
+  all-caps headlines, one joke repeated on every slide.
+- **For a B2B explainer, borrow print craft** — engraving, guilloche, a docket, a receipt, a
+  form — rather than a software kit of pills, rails and rounded cards.
+
+None of this is a style. Dark and light, violet and paper, an orb and a drawing all passed.
+What failed was the absence of an object and an idea you can see. The objects above are
+what passed, not a menu: this deck's object comes from this deck's subject, the way its
+palette does (*Inventing the design language*).
 
 ## Inventing the design language
 
@@ -734,14 +708,13 @@ The instinct this tool most needs you to fight is the one that makes every deck 
   it should make ten decks that share nothing but their quality.
 - **Nothing here is a default worth keeping.** Podium ships a neutral fallback theme so a
   themeless deck is not broken. It is not a starting point; it is a smoke alarm.
-- **Copy a preset to learn the moves, never the look.** Nothing in this skill ships a
-  design any more — the worked ones live in the registry at `<podium>/presets`, next to
-  everyone else's, where they are something a person chooses rather than something the
-  product hands you. Read one for what a computed mark and a real grid look like in code.
-  If your deck comes out looking like it, you have used it wrong.
-- **Starting from a preset does not relax any of this.** It moves where you start, not
+- **Nothing ships a design to lean on.** The published design languages live on the
+  presets shelf, where a person chooses one; an agent never opens one unasked, to borrow
+  from or to learn from. `lib/draw.mjs` and `lib/atmosphere.mjs` are the toolkit; the
+  look comes from the subject.
+- **A preset the person named does not relax any of this.** It moves where you start, not
   where you stop. The test is the same one at the top of this list: say in one sentence
-  what is different. "It is the riso preset with our copy in it" is not a sentence that
+  what is different. "It is that preset with our copy in it" is not a sentence that
   passes.
 - **The slide that scares you is usually the right one.** A slide that is ninety per cent
   empty, a headline cropped by the frame, a diagram with no words on it — those are the
@@ -771,28 +744,11 @@ It returns `src: "/m/<id>"`, which goes straight into an image block or `bg.imag
 picture itself, so you can see what you got. `anchor` is the kind: `art` (flat
 illustration), `render` (a lit 3D object — glass, chrome, glow: the hero object a deck
 returns to), `photo`, `logo`. `transparent: true` makes a cut-out with no box around it,
-to sit on a gradient or a glow. There is no default mood: `register` is this deck's. Or run `scripts/generate-image.ts`: it uses a
-model of your own when there is one, and otherwise Podium's, through `PODIUM_TOKEN`
-(`--via podium` picks Podium even when you have a key):
+to sit on a gradient or a glow. There is no default mood: `register` is this deck's.
 
-```bash
-npx tsx ${CLAUDE_SKILL_DIR}/scripts/generate-image.ts --name orb \
-  --anchor render --transparent --palette "#0E0A1F,#7B4DFF,#FF8A3D" \
-  --register "night launch, light on violet" --prompt "an iridescent glass orb, lit from inside"
-```
-
-That is where `/skill.zip` unpacks; if the skill lives somewhere else, it is
-`scripts/generate-image.ts` inside that folder. Run it from the deck folder: the PNG lands
-in `./.media/generated/` unless you pass `--out`. Through Podium it is also already in
-Podium, and the script prints its `/m/<id>`, so there is nothing to upload.
-
-Either way the style anchor is the same one (`lib/image-anchors.mjs`), so pictures made on
-the server and on a laptop belong to one set.
-
-Pass the deck's own `--ground,--ink,--accent`, and `--model` if the endpoint needs one.
-The style anchor is prepended verbatim to every prompt so only the subject clause varies — generate the whole set, then review them
-**as a set** and regenerate the outliers. Reviewing one at a time is how you end up with
-five styles in one deck.
+The style anchor is prepended verbatim to every prompt, so only the subject clause varies —
+generate the whole set, then review them **as a set** and regenerate the outliers.
+Reviewing one at a time is how you end up with five styles in one deck.
 
 Two things worth knowing before you spend a call:
 
@@ -810,8 +766,7 @@ Two things worth knowing before you spend a call:
 Art improves a deck when it is **rare, small and in a hole the composition already left**.
 It ruins one when it is the composition. The rules, in the order they bite:
 
-- **One or two in a deck, not one a slide.** Every shipped preset that carries art carries
-  two, except `riso`, which carries three. Nothing enforces a ceiling; the restraint is
+- **One or two in a deck, not one a slide.** Nothing enforces a ceiling; the restraint is
   the design, and past three is where a language turns into a brochure.
 - **Into the space the argument does not need.** A statement slide with a short sentence
   has an empty half; put it there. Never behind the copy, never as a full-bleed background
@@ -827,8 +782,7 @@ It ruins one when it is the composition. The rules, in the order they bite:
   the surface — a blank card, an empty sign — and put your own `svg` on top. A brand page
   whose logo is baked into the photograph starts lying the day the logo moves.
 - **The deck must render without them.** Read the ids from a file and fall back to the
-  computed mark when it is absent, the way `presets/riso` and `presets/brandbook` do. Art
-  is optional; a program that only works on the machine that generated it is not a program
+  computed mark when it is absent. Art is optional; a program that only works on the machine that generated it is not a program
   somebody can download.
 
 **The person's own pictures come in through `add_pictures`**, in every client:
@@ -854,11 +808,10 @@ there; use its `src`.
 | `upload_media` | base64 in, `/m/<id>` out — for a file your program already holds, like the poster screenshot |
 | `generate_image` | slide art from Podium's own image model, in the deck's palette, straight into the project's media. Only for accounts the admin has turned it on for; `check: true` asks first |
 | `decks` | the library; with an `id`, the deck as JSON, and its open comments |
-| `presets` | the shelf of published design languages. **Only on the user's instruction** — see above. With `from`, saves one of yours. |
+| `presets` | the shelf of published design languages. **Only on the user's instruction** — `references/presets.md`. With `from`, saves one of yours. |
 
-And eyes on your own machine: `node lib/eyes.mjs "<url>"`, or the `look` tool of the
-optional local podium-eyes server (above). Either takes the URL any of the others returned
-and gives you the pictures; Podium's own `look` takes the deck's `id`.
+And eyes on your own machine: `node lib/eyes.mjs "<url>"` takes the URL any of the others
+returned and gives you the pictures; Podium's own `look` takes the deck's `id`.
 
 **Read the warnings before you look at the picture.** They name the failures a screenshot
 cannot show: a `fonts.google` spec that returned HTTP 400 and left the whole deck in a
@@ -895,8 +848,10 @@ deck you built, so **read the comments before you rebuild a deck anybody has loo
 
 - **`publish` replaces the whole deck.** That is correct: the deck comes out of your
   program, so resend it. There is no patch operation and you do not want one.
-- **Everything needs `PODIUM_TOKEN`.** If a tool reports an invalid token, make a new one
-  at `<podium>/settings` → API tokens. Retrying will not start working.
+- **Publishing from your program needs Podium's token.** `lib/podium.mjs` reads
+  `PODIUM_TOKEN`, or Claude Code's own `podium` entry. With none — the Claude plugin signs
+  in without one — send the program to `build`. An invalid token: make a new one at
+  `<podium>/settings` → Connect an agent → Claude Code. Retrying will not start working.
 - **The deck is 1920×1080 and scales to fit.** Long headlines wrap; the report counts the
   lines for you.
 - **A slide with no blocks is refused.** So is any leftover field from the old model —

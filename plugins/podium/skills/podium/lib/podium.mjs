@@ -9,6 +9,8 @@
  *   import { Deck, slide, text, svg, image, group, chart, table, rule, grid } from './lib/podium.mjs';
  */
 import { readFileSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
 /**
  * The default plane. A deck can carry its own — `new Deck({ frame: { w: 1080, h: 1350 } })`
@@ -128,6 +130,30 @@ export class Deck {
 const env = (k, fallback) => process.env[k] ?? fallback;
 
 /**
+ * Where Podium is and who you are. PODIUM_URL / PODIUM_TOKEN when they are set; otherwise
+ * Claude Code's own registration of the `podium` server — `claude mcp add … --header
+ * "Authorization: Bearer …"`, which is the command Settings gives — read from ~/.claude.json
+ * (this project's entry first, then the user's). Only that one entry is read.
+ */
+function credentials() {
+  let url = env('PODIUM_URL');
+  let token = env('PODIUM_TOKEN');
+  if (!token) {
+    try {
+      const cfg = JSON.parse(readFileSync(join(homedir(), '.claude.json'), 'utf8'));
+      for (const s of [cfg.projects?.[process.cwd()]?.mcpServers?.podium, cfg.mcpServers?.podium]) {
+        const bearer = /^Bearer\s+(\S+)$/i.exec(s?.headers?.Authorization ?? s?.headers?.authorization ?? '');
+        if (!bearer) continue;
+        token = bearer[1];
+        url ??= typeof s.url === 'string' ? s.url.replace(/\/mcp\/?$/, '') : undefined;
+        break;
+      }
+    } catch { /* no Claude Code config here — fine, the error below says what to do */ }
+  }
+  return { url: url ?? 'https://podium.breezelabs.app', token };
+}
+
+/**
  * Set when this program is running on Podium's build service — the `build` tool, for
  * clients with no machine of their own (claude.ai chat). There is no network there and no
  * token: `publish` writes the deck to this file and Podium publishes it once the program
@@ -143,9 +169,13 @@ async function call(name, args) {
         ? "Bring the person's pictures in with the add_pictures tool (generated ones with generate_image), and put the /m/… path it returns in the program."
         : 'Call the tool itself; the program only builds the deck.'));
   }
-  const url = env('PODIUM_URL', 'https://podium.breezelabs.app');
-  const token = env('PODIUM_TOKEN');
-  if (!token) throw new Error('set PODIUM_TOKEN (make one at <podium>/settings → API tokens)');
+  const { url, token } = credentials();
+  if (!token) {
+    throw new Error(
+      'No Podium token on this machine (the Claude plugin signs in without one). Publish through ' +
+      'Podium instead: send this program to the build tool — build({ files: [{ path: "build.mjs", body }] }) — ' +
+      'then look({ id }).');
+  }
 
   const payload = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } });
   const res = await fetch(`${url}/mcp`, {

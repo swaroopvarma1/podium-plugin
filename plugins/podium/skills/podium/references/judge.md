@@ -29,7 +29,7 @@ told what the slides mean. Ask it for ONLY this JSON:
 
 ```json
 { "scores": { "argument": 0, "hierarchy": 0, "typography": 0, "composition": 0,
-              "colour": 0, "imagery": 0, "system": 0, "finish": 0 },
+              "colour": 0, "imagery": 0, "system": 0, "finish": 0, "memorable": 0 },
   "overall": 0, "presentTomorrow": false,
   "worst": "slide n: why", "fix": ["the three changes that would raise it most"] }
 ```
@@ -43,7 +43,9 @@ re-read your program. Say in the hand-over that the judge was you.
 
 ## The scale
 
-Eight dimensions, 1–5, half points allowed. Overall is their mean. **The scale rewards craft
+Nine dimensions, 1–5, half points allowed. Overall is their mean with **memorable counted
+twice** — when people sorted finished decks by hand, it was the one that decided which they
+kept: correct, generic decks the other eight scored over 4 were rejected. **The scale rewards craft
 and deliberateness, never a style:** dark or light, photographic, drawn or purely
 typographic, lit or flat, quiet or loud — any of them can score 5. What is scored is whether
 every choice was made for this subject and this room, and whether the room can read it.
@@ -83,6 +85,13 @@ dimension, however clean it is:
   can read.
 - Measured type under 20px outside a drawn interface → typography at most **3**; under 14px
   → at most 2.
+- **No crafted object on the cover** — a title over a rail, an arc or a row of boxes — or an
+  idea that lives only in the theme's name → memorable at most **2.5**, and overall at most
+  **3.5** whatever the rest scores.
+- Paper lit from a corner until it reads khaki, sage or grey → colour at most **3**. Paper
+  is meant to stay flat and its colour clear.
+- Ghost numerals behind content, condensed all-caps headlines, or one joke repeated on
+  every slide → memorable at most **3**.
 - **Present tomorrow** only when the overall is 4 or more and nothing in Finish is visible.
 
 ## The dimensions
@@ -104,3 +113,7 @@ dimension, however clean it is:
    proof; the signature recurs and changes rather than repeating.
 8. **Finish.** Nothing overflows, overlaps by accident or sits outside the frame; no
    placeholder, no missing picture; numbers and units consistent.
+9. **Memorable.** The cover carries one crafted object you could name from a thumbnail; the
+   idea shows on the slides, not just in the theme's name; a read deck still has poster
+   moments; nothing a hundred other decks have. Would a person keep this one over a
+   correct, generic version of the same deck? Any style can score 5 here.

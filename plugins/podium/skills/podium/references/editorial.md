@@ -24,8 +24,9 @@ The opposite register is `cinematic.md`. Pick by what the room does with the dec
 3. **The product is drawn, not screenshotted**: a phone mid-call, a payment page with the
    widget open, a console with numbered annotations — drawn in blocks and svg, so it is
    sharp, on-palette and editable.
-4. **Chapter dividers go dark**: an inverted ground, a ghost numeral, the chapter's title at
-   cover size — and a glow, so the dark is lit rather than black.
+4. **Chapter dividers are poster moments**: the chapter's title at cover size, or one
+   object from the deck's world drawn big — on an inverted ground with a glow, or on the
+   paper itself. Not a ghost numeral behind the title: that is the cliché people reject.
 
 ## The bar — every slide
 
@@ -35,11 +36,12 @@ The opposite register is `cinematic.md`. Pick by what the room does with the dec
   is never the largest thing on a proof slide. A 58px sentence over a chart at a third of
   the frame is the pattern this register exists to leave. (Eyes: `no hero`, `figure under
   hero scale`.)
-- **Light with range.** Paper is lit too: light pooling from one side — the ground at its
-  brightest in one corner and 25–35% darker toward the far edge (a radial `bg.fill` from the
-  ground's own hue, or `spotlight` in a pale key) — or a soft glow behind the diagram. A
-  2–4% tonal wash reads as flat grey from across a table. Hold one treatment for the deck.
-  (Eyes: `flat grounds`.)
+- **Paper stays flat and its colour clear.** Salmon, rose, cream, a printed blue — chosen
+  for the subject and held flat. Lighting paper from a corner turns it khaki, sage or grey,
+  and those decks were rejected. The depth on a read deck comes from the object drawn on
+  the paper — the receipt, the engraving, the drawn screen — not from a vignette. Dark
+  grounds in this register (a chapter divider, a deck read on a dark screen) get real light:
+  a glow behind the subject (eyes: `flat grounds`).
 - **Type for the room.** Nothing below 24px on the 1920 plane, footnotes, axis labels and
   mono labels included (22px inside a drawn interface); table text 24px+. Mono is for data — figures, ids, timings, code — not for
   furniture. (Eyes: `small type`.)
@@ -69,8 +71,8 @@ The opposite register is `cinematic.md`. Pick by what the room does with the dec
 | Eyebrow | mono 24px, UPPERCASE, 0.06–0.08em — on section openers, not every slide |
 | Folio | mono 24px, `"{{page:2}} / {{pages}}"` at the bottom right |
 | Cover title | display 500, 140–180px |
-| Chapter divider | inverted ground with a glow, a 16px rail down the left edge, a ghost numeral at 260px, the title at 180px+ |
-| Ground light | a radial `bg.fill` from one corner, the far edge 25–35% darker; or a glow (`glow()`) behind the diagram |
+| Chapter divider | the title at 180px+, or one object from the deck's world drawn big; inverted with a glow, or on the paper |
+| Ground | paper flat, in one clear colour; on a dark ground, a glow (`glow()`) behind the subject |
 
 **Pills** — three states, one meaning each: outlined 1.5px in the role colour = an event;
 tinted fill with dark ink = a step; solid fill with white ink = the one in use. Mono 22px,

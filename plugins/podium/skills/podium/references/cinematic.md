@@ -40,7 +40,7 @@ them to learn the method, or when they fit, but they are not the register: the a
 the investor deck's own move, and ten decks with an aurora are one deck ten times. Other
 answers the same paint fields build: a single hard beam across the frame; a horizon line
 with light below it; a mesh of two or three of the product's colours; a photograph as the
-ground with a scrim; pure black and one light; a paper white lit from one corner.
+ground with a scrim; pure black and one light; a flat paper colour with one bold object on it.
 
 The three worked answers:
 
