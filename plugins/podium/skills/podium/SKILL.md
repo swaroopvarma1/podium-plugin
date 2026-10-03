@@ -1,6 +1,6 @@
 ---
 name: podium
-description: Build a presentation deck, or a web page people scroll, and publish it to Podium — run on your machine, or on Podium itself with the build tool when you have no shell (claude.ai chat). Use when asked to make or design a deck, presentation, slides, pitch or talk — or a page, one-pager, microsite, web report or landing page. Your first reply is questions, not a deck — and always first among them, something to point at (a Pinterest pin or board, a Behance or Dribbble shot, a screenshot, a deck or site they like), then the audience, the one claim, and — when image generation is off for them — whether to get access or go without. Then show two or three covers as pictures and let them pick before you build; when they have nothing to point at, search for references with them. There are no templates and no layouts: you invent the design language and arrange every slide yourself.
+description: Build a presentation deck, or a web page people scroll, and publish it to Podium — run on your machine, or on Podium itself with the build tool when you have no shell (claude.ai chat). Use when asked to make or design a deck, presentation, slides, pitch or talk — or a page, one-pager, microsite, web report or landing page. Your first reply is questions, not a deck — and always first among them, something to point at (a Pinterest pin or board, a Behance or Dribbble shot, a screenshot, a deck or site they like), then the audience, the one claim, and — when image generation is off for them — whether to get access or go without. The reference question carries Pinterest, Behance and Dribbble links already searched for their subject, so they can click, pick two and paste screenshots back — or say "you pick". Then show two or three covers as pictures and let them pick before you build. There are no templates and no layouts: you invent the design language and arrange every slide yourself.
 ---
 
 # Podium
@@ -24,10 +24,25 @@ decide whether the deck is any good: what it is for, and how it looks. So the fi
 minutes always run the same way, and the person's first deck depends on them:
 
 1. **Questions, one batch** (*Ask before you build*), and **the reference question always
-   first**: *"Is there anything you can point at — a Pinterest pin or board, a Behance or
-   Dribbble shot, a screenshot, a deck or a site you like? Two is better than one."* A
-   reference is the one answer that most improves the deck, and asking it first gives them
-   time to find one while they answer the rest. Then the decision and the one person; how
+   first, with the links already in it**:
+
+   > **First, something to point at.** Paste screenshots of a deck, site or brand guide
+   > whose look you like — two is better than one. Nothing to hand? Open one of these,
+   > already searched for your subject, and paste back two you like:
+   >
+   > 📌 Pinterest — board report editorial: [click here](…)
+   > 🎨 Behance — board report editorial: [click here](…)
+   > 🏀 Dribbble — board report editorial: [click here](…)
+   >
+   > Or say **"you pick"** and I'll show you three covers in different looks.
+
+   Make the links from what they asked for, before you ask:
+   `node lib/references.mjs --ask "<query>"` prints them ready to paste (no shell: build
+   them yourself, *References*). They go in the message text, not in `AskUserQuestion`'s
+   options, which cannot take a picture back; there the reference question's options are
+   *"I'll paste screenshots next"* (the default) and *"You pick"*. A reference is the one
+   answer that most improves the deck, and asking it first gives them time to find one
+   while they answer the rest. Then the decision and the one person; how
    it reaches the room and on what screen; what must not be on it and where the numbers
    come from. A default marked on each. Call
    `generate_image({ check: true })` first: if it is off, the batch offers the choice
@@ -252,8 +267,9 @@ minutes, presented" against "sent as a link" settles length and density in one s
 **One slot is always the reference question** (*References*, below) — asked first, never
 traded away for another. It is the single answer that most improves a deck: a deck built
 from something the person pointed at lands; one built from adjectives drifts to the same
-generic look every time. If they have nothing, the question still did its job — offer to
-search together, or let the covers be the question.
+generic look every time. The question carries the search links, so having nothing to hand
+costs them a click, not a round; and *"you pick"* sends you to look yourself and let the
+covers be the question.
 
 Spend the other three in rough order, on the first that apply to this deck:
 
@@ -312,6 +328,25 @@ or board, a Behance or Dribbble shot, an Awwwards site, a screenshot, a deck or 
 they admired, a poster, a photo of a printed thing.* The paperback on their desk counts
 too, and the physical one they picked up themselves is usually the best of the lot.
 
+**Put links in the question**, already searched for their subject, so somebody with
+nothing to hand clicks instead of saying no. Turn what they asked for into one or two
+queries — the medium, the register and the subject, never adjectives: *"board report
+editorial"*, not *"clean modern deck"* — and run `node lib/references.mjs --ask "<query>"`.
+It prints Pinterest, Behance and Dribbble one per line, each ending in *click here* — in a
+terminal a link can draw as plain text, and the words still say it is one. Paste the lines
+into the message as they are. With no shell, write them yourself in the same form, the
+query URL-encoded:
+
+```
+📌 Pinterest — <query>: [click here](https://www.pinterest.com/search/pins/?q=<query>)
+🎨 Behance — <query>: [click here](https://www.behance.net/search/projects/<query>)
+🏀 Dribbble — <query>: [click here](https://dribbble.com/search/<query>)
+```
+
+What comes back is a screenshot pasted into the chat: those sites put pins behind a
+sign-in, so a picture is the one form that always arrives. A pin's link is welcome too,
+and read like any URL below.
+
 Ask for two. One reference is ambiguous — you cannot tell which part they liked. Two
 share something, and the shared thing is the brief.
 
@@ -323,7 +358,7 @@ share something, and the shared thing is the brief.
 | **Keynote, Canva, Figma** | Ask for a PDF or PNG export. One exported frame tells you more than the source file and costs nothing. |
 | **a URL** | Fetching it strips the design and hands you text, which is the opposite of what you want. Hand it to eyes, `node lib/eyes.mjs "<url>"`: any URL that is not a deck comes back as a picture of the page. **Pinterest, Behance and Dribbble** often answer a browser with a sign-in wall — if the picture is a login page, ask for a screenshot or the image's own link (right-click → copy image address) rather than guessing from the title. With no shell, ask for the screenshot straight away. |
 | **a name with no file** — "like the Economist" | Say back what you think they mean, in specifics: *near-black ground, one red, a serif at two sizes and nothing between them.* Half the time the correction is the brief. |
-| **nothing** | Search with them — *When they have nothing to point at*, below. Or build the cover three ways (*Directions*, below) and let the pictures be the question. |
+| **"you pick"** | Look yourself — *When they have nothing to point at*, below — then build the cover three ways (*Directions*, below) and let the pictures be the question. |
 
 Read a reference for its decisions, not its surface. Sample the ground and the ink out
 of the actual pixels rather than naming them by eye — "warm off-white" is four different
@@ -361,9 +396,10 @@ to the OS UI font and looks merely a bit off.
 
 ### When they have nothing to point at
 
-Search with them. Turn the brief into two or three queries — the medium, the register and
-the subject, never adjectives: *"annual report editorial layout"*, *"aurora gradient keynote"*,
-*"swiss grid pitch deck"*, not *"clean modern deck"*. Then:
+They had the links in the first question. When they say *"you pick"*, or the links turned
+up nothing they liked, look yourself. Turn the brief into two or three queries — the
+medium, the register and the subject, never adjectives: *"annual report editorial layout"*,
+*"aurora gradient keynote"*, *"swiss grid pitch deck"*, not *"clean modern deck"*. Then:
 
 ```bash
 node lib/references.mjs "annual report editorial layout" "aurora gradient keynote"
@@ -372,10 +408,11 @@ node lib/references.mjs "annual report editorial layout" "aurora gradient keynot
 It prints search links in two groups. **Look at the first group yourself** — Cosmos,
 Are.na, Dribbble, Fonts In Use — with `node lib/eyes.mjs "<url>"`, which returns the top
 two screens of the results. Pick four to six that pull in different directions and say
-what each one shows in a line. **Give the person the second group** — Pinterest first, then
-Behance, Savee, Unsplash — to open themselves: those sites put results behind a sign-in or
-refuse automated browsers, and getting round that is not your job. Ask for two they like,
-as a screenshot or the image's link, and read what comes back like any other reference.
+what each one shows in a line, then make the covers from the ones that pull hardest. The
+second group — Pinterest, Behance, Savee, Unsplash — is the person's to open: those sites
+put results behind a sign-in or refuse automated browsers, and getting round that is not
+your job. If they open one after all, read the screenshots that come back like any other
+reference.
 
 If `generate_image({ check: true })` says generation is on, you can also make two or three
 mood pictures in candidate palettes, to react to rather than to use.

@@ -4,6 +4,7 @@
  *
  *   node lib/references.mjs "annual report editorial layout" "sumi ink poster"
  *   node lib/references.mjs --json "swiss grid presentation"
+ *   node lib/references.mjs --ask "board report editorial"     → links to paste into the question
  *
  * Prints search links for each query, in two groups:
  *
@@ -65,11 +66,31 @@ export const SOURCES = [
   }
 ];
 
+/** The three the person is given in the first question, before they say they have nothing. */
+export const ASK = [
+  { source: 'Pinterest', icon: '📌' },
+  { source: 'Behance', icon: '🎨' },
+  { source: 'Dribbble', icon: '🏀' }
+];
+
 /** The links for one query. */
 export function referenceLinks(query) {
   const q = String(query ?? '').trim();
   if (!q) throw new Error('a query is a few words: the medium, the register and the subject');
   return SOURCES.map(({ source, who, url, goodFor }) => ({ source, who, url: url(q), goodFor }));
+}
+
+/**
+ * The first question's links, one line per site and query, each ending in "click here": in
+ * a terminal that draws a link as plain text, the words still say it is one, and the person
+ * never reads an encoded URL.
+ */
+export function askLinks(queries) {
+  return queries.flatMap((q) => {
+    const links = referenceLinks(q);
+    const label = q.trim().replace(/\s+/g, ' ');
+    return ASK.map(({ source, icon }) => `${icon} ${source} — ${label}: [click here](${links.find((l) => l.source === source).url})`);
+  }).join('\n');
 }
 
 function print(queries) {
@@ -99,13 +120,15 @@ const isMain = (() => {
 if (isMain) {
   const args = process.argv.slice(2);
   const json = args.includes('--json');
-  const queries = args.filter((a) => a !== '--json');
+  const ask = args.includes('--ask');
+  const queries = args.filter((a) => a !== '--json' && a !== '--ask');
   if (!queries.length || args.includes('--help') || args.includes('-h')) {
-    console.error('usage: node lib/references.mjs [--json] "<query>" ["<query>" …]\n\n' +
+    console.error('usage: node lib/references.mjs [--json | --ask] "<query>" ["<query>" …]\n\n' +
       'A query is the medium, the register and the subject, from the brief: "annual report\n' +
       'editorial layout", "sumi ink poster", "swiss grid presentation" — not "clean modern deck".');
     process.exit(queries.length ? 0 : 1);
   }
-  if (json) console.log(JSON.stringify(queries.map((q) => ({ query: q, links: referenceLinks(q) })), null, 2));
+  if (ask) console.log(askLinks(queries));
+  else if (json) console.log(JSON.stringify(queries.map((q) => ({ query: q, links: referenceLinks(q) })), null, 2));
   else print(queries);
 }

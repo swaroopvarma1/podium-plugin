@@ -21,11 +21,17 @@ so, because a page with no reference drifts to the same generic landing page eve
 
 > Is there a page, a site or a picture you want this to feel like? A Pinterest board or pin,
 > a Behance or Dribbble shot, an Awwwards site, a screenshot, a link — anything. Two is
-> better than one.
+> better than one. Nothing to hand? Open one of these and paste back two you like:
+>
+> 📌 Pinterest — <subject>: [click here](…)
+> 🎨 Behance — <subject>: [click here](…)
+> 🏀 Dribbble — <subject>: [click here](…)
+>
+> Or say "you pick".
 
-Read what comes back for its decisions, as SKILL.md describes: the type and its scale, how
-much air, how sections are divided, the one signature move. `node lib/references.mjs "…"`
-gives search links when they want to look together.
+The links are searched for the subject, as SKILL.md's *References* makes them
+(`node lib/references.mjs --ask "…"`). Read what comes back for its decisions: the type and
+its scale, how much air, how sections are divided, the one signature move.
 
 **When there is no reference,** say so plainly before you build, in one line:
 

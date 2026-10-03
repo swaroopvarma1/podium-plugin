@@ -21,9 +21,12 @@ it's for the board on Thursday, so I haven't asked about the audience."*
 
 1. **Is there anything you can point at?** First, every time: a Pinterest pin or board, a
    Behance or Dribbble shot, a screenshot, a deck, a poster, a site. Two is better than
-   one. Offer *"Find me some"* as an option, which runs *When they have nothing to point
-   at* in `SKILL.md`, and a preset as one line inside the question (default: no). Asked
-   first so they can go and find one while they answer the rest.
+   one. Put the Pinterest, Behance and Dribbble links in the question, already searched
+   for their subject (`node lib/references.mjs --ask "<query>"`), so having nothing to hand
+   is a click and two pasted screenshots, not a no. Offer *"You pick"* as the other option,
+   which runs *When they have nothing to point at* in `SKILL.md`, and a preset as one line
+   inside the question (default: no). Asked first so they can go and find one while they
+   answer the rest.
    *Changes:* the register — how loud, how dense, how much air — and whether the deck
    lands or drifts to the generic look.
 2. **What should the room do when it ends, and who has to be convinced?** A name and a
