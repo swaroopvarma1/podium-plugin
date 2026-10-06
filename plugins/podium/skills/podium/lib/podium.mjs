@@ -103,8 +103,10 @@ export const slide = (props, blocks) => clean({ ...props, blocks });
 /* ── the deck ───────────────────────────────────────────────────────────────── */
 
 export class Deck {
-  constructor({ id, project, title, subtitle, theme, poster, frame }) {
-    Object.assign(this, { id, project, title, subtitle, theme, poster, frame, slides: [] });
+  /** `brief` is what the person answered, what you assumed and why — kept with the deck,
+      never on a share link. It used to be dropped here, so a program's brief never arrived. */
+  constructor({ id, project, title, subtitle, theme, poster, frame, brief }) {
+    Object.assign(this, { id, project, title, subtitle, theme, poster, frame, brief, slides: [] });
   }
   add(props, blocks) {
     this.slides.push(slide(props, blocks));
@@ -116,8 +118,8 @@ export class Deck {
    * `poster` silently went missing the first time it was added. Add the field here too.
    */
   toJSON() {
-    const { id, project, title, subtitle, theme, poster, frame, slides } = this;
-    return clean({ id, project, title, subtitle, theme, poster, frame, slides });
+    const { id, project, title, subtitle, theme, poster, frame, brief, slides } = this;
+    return clean({ id, project, title, subtitle, theme, poster, frame, brief, slides });
   }
   write(path) {
     writeFileSync(path, JSON.stringify(this, null, 1));

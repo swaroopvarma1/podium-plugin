@@ -235,7 +235,8 @@ in the first question when the stakes call for it, and take no for an answer.
 
 Either way, **record the brief**: `publish` takes `brief` — what they answered, the
 references and what you took from each, the direction they picked, and what you assumed —
-and `decks({ id })` hands it back. It never reaches a share link. Read it at the start of
+and `decks({ id })` hands it back. From a program, `new Deck({ …, brief })` (or
+`deck.brief = …` before `publish`) sends it. It never reaches a share link. Read it at the start of
 every later session and never re-ask what it answers; that is how a teammate's agent picks
 the deck up without starting the conversation over.
 
@@ -812,7 +813,9 @@ Reviewing one at a time is how you end up with five styles in one deck.
 2. **Prompt the object, not the mood.** Material, form, the one detail that makes it yours,
    and where the light comes from — *"a single rounded glass tile, thick and bevelled, lit
    from inside, one corner catching the light"*, not *"a futuristic abstract shape"*. The
-   anchor carries the style and `register` the mood.
+   anchor carries the style and `register` the mood. For a cut-out, put the light ON the
+   object — *a hard highlight along its top edge* — never a spotlight, beam or glow in the
+   air: the model paints that as translucent grey haze round the subject.
 3. **The hero is `render` with `transparent: true`.** A cut-out sits on your ground with a
    glow behind it (`lib/atmosphere.mjs`). `art` for a drawn set — a read
    deck's engraved telephone, a docket — on the paper's own colour; `photo` only for
@@ -827,6 +830,8 @@ Reviewing one at a time is how you end up with five styles in one deck.
    beside a figure, behind glass — changing as the argument moves (the floor, rule 10).
 6. **Reject what is broken.** Garbled marks, an extra part, a halo or a box round a
    cut-out, a shape that reads as something else at thumbnail size: regenerate, never ship.
+   A haze is invisible on the white you are shown the picture on and a grey fog on a dark
+   slide, so `generate_image` measures it and says so in `warning` — make that one again.
 
 Two things worth knowing before you spend a call:
 

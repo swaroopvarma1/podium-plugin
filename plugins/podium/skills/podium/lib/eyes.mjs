@@ -255,6 +255,8 @@ async function openTab(chrome) {
   const problems = [];
   const urls = new Map();
   let onLoad = null;
+  /* The HTTP status of the page itself — the main frame's document, whose id is the target's. */
+  let docStatus = null;
   const off = chrome.on((e) => {
     if (e.sessionId !== sessionId) return;
     const p = e.params ?? {};
@@ -274,6 +276,7 @@ async function openTab(chrome) {
         urls.set(p.requestId, p.request?.url);
         break;
       case 'Network.responseReceived':
+        if (p.type === 'Document' && p.frameId === targetId) docStatus = p.response?.status ?? null;
         if (p.response?.status >= 400) problems.push(`HTTP ${p.response.status} ${shortUrl(p.response.url)}`);
         break;
       case 'Network.loadingFailed':
@@ -299,6 +302,7 @@ async function openTab(chrome) {
   ]);
 
   const navigate = async (url) => {
+    docStatus = null;
     const loaded = new Promise((resolve) => { onLoad = resolve; });
     const nav = await send('Page.navigate', { url });
     if (nav.errorText) throw new Error(`could not open ${url}: ${nav.errorText}`);
@@ -344,7 +348,7 @@ async function openTab(chrome) {
     await chrome.send('Target.closeTarget', { targetId }).catch(() => {});
   };
 
-  return { evaluate, viewport, navigate, until, settle, images, capture, close, problems, send };
+  return { evaluate, viewport, navigate, until, settle, images, capture, close, problems, send, status: () => docStatus };
 }
 
 /* ─────────────────────────────  looking  ──────────────────────────── */
@@ -437,6 +441,22 @@ async function lookAt(chrome, { target, asked, builds = new Map() }) {
   try {
     await tab.viewport(SHEET_VIEWPORT, 1000);
     await tab.navigate(target.url);
+
+    /* A Podium link that answered an error has nothing to look at. It used to be waited on
+       for twenty seconds and then photographed as if it were a reference site — "is not a
+       Podium deck" — when the link had only expired, or was made for an older version. */
+    const status = tab.status();
+    if (target.deckLink && status >= 400) {
+      /* Podium's error card puts the server's own words in `.lead`; any other page, its text. */
+      const said = String(await tab.evaluate(`(document.querySelector('.auth-card .lead') ?? document.querySelector('main') ?? document.body)?.innerText ?? ''`).catch(() => ''))
+        .replace(/\s+/g, ' ').trim().slice(0, 300);
+      throw new Error(
+        `${target.url.replace(/\?.*$/, '')} answered HTTP ${status}${said ? ` — "${said}"` : ''}. ` +
+        (status === 410
+          ? 'A look link shows only the version it was made for: use the look URL the latest publish or preview returned.'
+          : 'Use the look URL that publish or preview returned, or the deck\'s share link.')
+      );
+    }
 
     /* The sheet announces itself once it has hydrated. Anything that never does is not a
        Podium deck — a site somebody pointed at as a reference — and is screenshotted as a

@@ -199,6 +199,8 @@ generate_image kinds: art · render · photo · logo
   transparent: true returns a cut-out — the object alone, no box — to sit on a gradient
   or a glow. The palette is the deck's own colours; register is the deck's mood, in words.
   An image block with style.blend "screen" drops a black ground on a dark slide.
+  Pictures come back as JPEG — a tenth of a PNG — except cut-outs and logos, which stay PNG;
+  a cut-out that came back wrapped in grey haze says so in the result's warning: make it again.
 
 MOTION — typed like the rest, and still wherever a picture is taken: still mode, print,
 PDF, thumbnails, the contact sheet, eyes and reduced motion show every loop at rest and

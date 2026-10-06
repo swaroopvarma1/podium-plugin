@@ -117,6 +117,10 @@ phone's corner radius on it; the model's screens are gibberish.
 The original moves, and the motion is part of why it lands: the room is carried, not
 clicked through. Typed, so it is in the JSON (the vocabulary's MOTION section):
 
+- **Slides arrive composed.** `anim: "none"` on most slides: the crossfade brings the slide
+  in whole, and nothing pops in after it. Blocks rising one by one after every click is
+  motion for its own sake, and with big objects on the slide it reads as flicker. Keep
+  entrances for builds — what arrives on a click because the argument does.
 - **Chapters dip.** The slide that opens a chapter takes `transition: { type: "dip",
   color: … }`. Through the ground is a breath, and on a dark deck it is the one to use: a
   dip through white or any colour far brighter than the slides on either side is a flash,
