@@ -817,9 +817,9 @@ Reviewing one at a time is how you end up with five styles in one deck.
    glow behind it (`lib/atmosphere.mjs`). `art` for a drawn set — a read
    deck's engraved telephone, a docket — on the paper's own colour; `photo` only for
    something real.
-4. **Make three at `quality: "medium"`, pick by looking, then make the keeper at `"high"`.**
-   The first is rarely the one. Medium takes about forty seconds, high two to three
-   minutes, so explore at medium. Check what is left with `check: true`, put the three side
+4. **Make three at `quality: "medium"`, pick by looking, then make the keeper at `"xhigh"`.**
+   The first is rarely the one. Each takes about half a minute; medium costs a quarter of
+   `high` and `xhigh` about twice it, so explore at medium and spend on the one you keep. Check what is left with `check: true`, put the three side
    by side, keep the one with presence, and say which and why in the brief. In the directions round each cover can carry a
    different candidate, so the person picks the object too.
 5. **Place it big, and let it recur.** 600–800px on the 1920 plane on the cover, never a

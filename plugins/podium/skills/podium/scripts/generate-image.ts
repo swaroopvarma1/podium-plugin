@@ -68,6 +68,7 @@ if (!name || !subject || !palette) {
   console.error(
     'usage: --name <file> --prompt "<subject>" --palette "#RRGGBB,#RRGGBB,#RRGGBB"\n' +
     '       [--anchor art|render|photo|logo] [--register "night launch"] [--size WxH] [--out <dir>]\n' +
+    '       [--quality high|xhigh|medium|low]\n' +
     '       [--model <id>] [--transparent] [--api-version 2025-04-01-preview]\n' +
     '       [--via podium] [--project <slug>]\n\n' +
     'Take the palette from the deck theme: --ground, --ink, --accent.'
