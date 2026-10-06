@@ -1,7 +1,7 @@
 {
   "name": "podium",
   "displayName": "Podium",
-  "version": "2.0.30",
+  "version": "2.0.32",
   "description": "Design presentation decks with Claude and present them from a link: the Podium skill (brief, design language, build program, eyes, critic) and the Podium connector.",
   "author": {
     "name": "Podium",

@@ -204,7 +204,8 @@ MOTION — typed like the rest, and still wherever a picture is taken: still mod
 PDF, thumbnails, the contact sheet, eyes and reduced motion show every loop at rest and
 every slide at its final build. What you measure is what the room sees first.
 
-  transition  on a SLIDE: how it arrives. Going back plays it in reverse.
+  transition  on a SLIDE: how it arrives, going forward. Back is always a quick crossfade to
+    the slide as it was left — already built, nothing replayed.
     fade  the crossfade every slide has unless it says otherwise · 380ms
     none  a cut
     dip   fades through a colour (color, default the ground): a chapter change · 1100ms
@@ -212,7 +213,9 @@ every slide at its final build. What you measure is what the room sees first.
     wipe  the new slide is uncovered from one edge, from the left unless it says · 800ms
     zoom  the old slide swells and fades as the new one settles in · 600ms
     long form { "type": "dip", "duration": 1400, "color": "#FFFFFF" }; push and wipe take
-    "from": left | right | top | bottom. The blocks on an arriving slide wait for it to land.
+    "from": left | right | top | bottom. The blocks on an arriving slide wait for it to land. A dip
+    through a colour far brighter than the slides either side is a flash, and a room reads one
+    on every chapter as flicker: dip a dark deck through its ground.
 
   step, until  on a BLOCK: builds.
     "step": 1    arrives on the first click, with its own anim and delay; blocks sharing a

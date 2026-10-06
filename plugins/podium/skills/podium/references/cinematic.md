@@ -118,9 +118,11 @@ The original moves, and the motion is part of why it lands: the room is carried,
 clicked through. Typed, so it is in the JSON (the vocabulary's MOTION section):
 
 - **Chapters dip.** The slide that opens a chapter takes `transition: { type: "dip",
-  color: … }` — through white on a dark deck is a flash of light between acts; through the
-  ground is a breath. The crossfade everywhere else. One kind of transition, used for one
-  thing.
+  color: … }`. Through the ground is a breath, and on a dark deck it is the one to use: a
+  dip through white or any colour far brighter than the slides on either side is a flash,
+  and a room watching one on every chapter calls it flicker (a person did, on a deck that
+  dipped through brass five times). The crossfade everywhere else. One kind of transition,
+  used for one thing. Going back is always a quick crossfade — never the dip again.
 - **Stepped proof builds.** A table on glass that fills row by row, three claims that
   arrive on three clicks, a "before" that is replaced in place (`until`). Builds, not
   near-duplicate slides.
@@ -147,7 +149,10 @@ svg(`<style>
 ```
 
 The last frame is what every still shows — here, the field dim and theirs lit — so the
-picture in the PDF is the point of the motion. One choreographed slide a chapter at most;
+picture in the PDF is the point of the motion. **Move fills, fade lines.** A thin stroke —
+a hairline, a dashed ring — that scales or slides, above all through the slow end of an
+ease-out, creeps across the pixel grid, and on a real screen that reads as flicker (eyes'
+software renderer will not show it). Bring lines in by opacity where they will stay. One choreographed slide a chapter at most;
 the rest of the deck should be still enough that this one is felt.
 
 ## The hero, on every slide
