@@ -3,7 +3,7 @@
  * Publish a page — one HTML document — to Podium, and print where to look at it.
  *
  *   node lib/page.mjs page.html --id closing-note --project fasttrack [--title "…"]
- *                     [--subtitle "…"] [--visibility unlisted]
+ *                     [--subtitle "…"] [--visibility unlisted] [--embed "example.org"]
  *
  * The title defaults to the document's own <title>. Pictures in it are /m/… paths from
  * add_pictures or generate_image. Then look: `node lib/eyes.mjs "<look>"` shows the page at
@@ -17,7 +17,7 @@ const [file, ...rest] = process.argv.slice(2);
 const flag = (name) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : undefined; };
 
 if (!file || file.startsWith('--')) {
-  console.error('usage: node lib/page.mjs page.html --id <id> --project <project> [--title "…"] [--subtitle "…"] [--visibility unlisted]');
+  console.error('usage: node lib/page.mjs page.html --id <id> --project <project> [--title "…"] [--subtitle "…"] [--visibility unlisted] [--embed "example.org" | any | off]');
   process.exit(1);
 }
 
@@ -31,11 +31,13 @@ const result = await call('publish', {
   kind: 'page', id, title, html,
   project: flag('--project'),
   subtitle: flag('--subtitle'),
-  visibility: flag('--visibility')
+  visibility: flag('--visibility'),
+  embed: flag('--embed')
 });
 
 console.error(`published page ${result.published} v${result.version} — ${(Buffer.byteLength(html) / 1024).toFixed(0)}KB`);
 for (const w of result.warnings ?? []) console.error(`  ${w.level.padEnd(5)} ${w.at} — ${w.says}${w.fix ? `\n        fix: ${w.fix}` : ''}`);
 if (!result.warnings?.length) console.error('  no warnings');
 console.error(`\n  look   ${result.look}\n  stage  ${result.stage}\n  share  ${result.share}\n`);
+if (result.embed) console.error(`  embed  for ${Array.isArray(result.embed.sites) ? result.embed.sites.join(', ') : result.embed.sites} — paste this into the website:\n\n${result.embed.code}\n`);
 console.log(result.look);

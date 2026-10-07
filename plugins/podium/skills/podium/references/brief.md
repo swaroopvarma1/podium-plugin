@@ -1,13 +1,20 @@
 # The thorough brief
 
 For a deck that carries weight: a pitch, a board deck, a launch, anything a customer will
-see, anything longer than about ten slides. The quick round in `SKILL.md` (one batch of
-four) is still the default. Offer this one when the stakes call for it, in the first
+see, anything longer than about ten slides. The quick round (`SKILL.md` step 2, in full in
+`references/asking.md`: one batch of four) is still the default. Offer this one when the stakes call for it, in the first
 question of that round: *"This one matters — do you want the thorough brief? Three short
 rounds, about two minutes."* Default: no.
 
+## Contents
+
+- Round 1 — the room, and something to point at
+- Round 2 — what goes in, and what must not
+- Round 3 — the look, and the length
+- Recording it
+
 It is three rounds of `AskUserQuestion`, four questions each, asked one round at a time.
-The rule from `SKILL.md` still holds inside every round:
+The rule from `SKILL.md` and `asking.md` still holds inside every round:
 
 - Each question changes a line of `build.mjs`. If it changes nothing, drop it.
 - Every question has a default, marked, so somebody who does not care taps once.

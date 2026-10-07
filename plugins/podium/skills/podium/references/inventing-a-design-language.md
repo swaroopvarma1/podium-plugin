@@ -6,6 +6,18 @@ every time, applied about a third of it, and produced decks that read as a templ
 the colours changed. The menu was the problem: given a list, the job becomes choosing, and
 choosing is not designing.
 
+## Contents
+
+- 1. Find the physical thing
+- 2. Ground first, and it does not have to be white
+- 3. One accent, one job
+- 4. Two or three faces, and pick them against each other
+- 5. Build a scale, then refuse the middle
+- 6. Name one signature move, then build it
+- 7. Compute the marks
+- 8. Look at it, then break the safest thing
+- The failure modes, in the order they happen
+
 So this is a method instead. It takes about ten minutes and it is the difference between a
 deck somebody remembers and a deck somebody sits through.
 

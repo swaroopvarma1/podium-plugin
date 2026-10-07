@@ -6,6 +6,19 @@ up as its best, rebuilt in Podium slide by slide until the two were indistinguis
 glance. Everything below is what it took, measured — as proportions and roles, never as
 that deck's colours. Its violet and orange are its brand; copying them is copying the deck.
 
+## Contents
+
+- What makes it cinematic
+- Grounds — light is a method, not a recipe
+- Type
+- Glass
+- Light
+- Pictures
+- Motion
+- Drawn motion — one moment choreographed
+- The hero, on every slide
+- What breaks it
+
 The opposite register is `editorial.md`: a document that is read. Pick by what the room does
 with the deck, not by what looks impressive.
 

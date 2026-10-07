@@ -6,6 +6,13 @@ what to change. In Podium's own evals, decks whose authors had graded every slid
 were scored 3.6–3.9 by a reader who had only the pictures — and that reader's notes named
 the same few faults on almost every deck, which is what makes them worth acting on.
 
+## Contents
+
+- When
+- How
+- The scale
+- The dimensions
+
 ## When
 
 After the critic pass (SKILL.md), before you hand the deck over. Once for a quick deck;

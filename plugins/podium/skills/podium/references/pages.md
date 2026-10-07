@@ -5,6 +5,16 @@ announcement, a story told top to bottom. A **deck** is slides somebody clicks t
 presents. Podium hosts both, at the same links, with the same comments, versions and
 sharing.
 
+## Contents
+
+- Ask for inspiration first
+- One document, both widths
+- The shape of a good page
+- Motion
+- Pictures and links
+- Publish, look, fix
+- On their own website
+
 **The rule:** read by scrolling, on any screen → a page. Presented, or paged slide by slide
 → a deck. When the person asks for "a page", "a one-pager", "a microsite", "a web report"
 or "something like a landing page", it is a page.
@@ -114,3 +124,21 @@ Fix the document and publish again.
 
 Then the critic and the judge, as SKILL.md describes, section by section instead of slide by
 slide — and the judge sees both widths.
+
+## On their own website
+
+When the page is to live inside the person's own website, embed it. Ask which website, then
+publish with `embed` set to that site:
+
+- **With a shell:** `node lib/page.mjs page.html --id <id> --project <project> --embed "example.org"`
+- **Without one:** `publish({ kind: "page", id, embed: "example.org" })`
+
+The result's `embed.code` is the HTML to paste where the page should appear. It shows the
+page with nothing of Podium's around it (no comments, no way back to a library), and the
+frame grows to the page's height, so their website scrolls and the frame never does. Only
+the sites named may show it; a private page becomes "unlisted", because an embed needs a
+link. `embed: "off"` stops it.
+
+Inside a frame that fits its page, `100vh` means the frame's height, not the screen's, so a
+section sized to the screen grows with it. Cap such sections with `max-height`, as a hero
+usually wants anyway.

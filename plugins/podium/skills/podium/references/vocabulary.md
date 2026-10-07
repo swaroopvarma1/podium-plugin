@@ -3,6 +3,20 @@
 Every field, value and default a deck can use, generated from the code that renders it.
 Read it before the first publish. Unknown names are refused with the reason, never ignored.
 
+## Contents
+
+Each section below starts with its name in capitals; search for it.
+
+- THEME: the deck's design language (vars, faces, the scale, signature)
+- A SLIDE IS BLOCKS ON A PLANE: slide fields, bg, tone, notes
+- RICH TEXT: bold, italic, accent, mono, alt
+- CHARTS: bar, line, meter
+- BLOCKS: text, svg, image, group, chart, table; at, style
+- ROLES: what each text role draws by default
+- PAINT: gradients, glass, glow, shadow, grain
+- PICTURES: /m/ paths, add_pictures, generate_image
+- MOTION: transitions, builds, loops
+
 ```
 THEME — the deck's own design language. Optional; anything omitted falls back to a
 neutral default, so a three-property theme is a real theme. There is NO fixed set and no

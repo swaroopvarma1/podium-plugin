@@ -3,6 +3,14 @@
 For a deck that is **read, or walked through closely**: an enterprise explainer, an
 architecture review, a working document for an operator, a pilot plan, a quarterly review.
 
+## Contents
+
+- Keep — what those decks did well
+- The bar — every slide
+- Measures
+- Motion
+- What breaks it
+
 This register was first distilled from real customer decks their own team rated "okay", and
 the evals showed what that inherits: a judge holding decks to the team's best work capped
 everything that still looked like them — flat pale paper, a 58–64px sentence as the
